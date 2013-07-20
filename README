@@ -1,0 +1,3 @@
+g++ main.cpp -lglut -lGLU
+
+g++ main.cpp -lGLU -lglfw
