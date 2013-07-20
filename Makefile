@@ -1,2 +1,2 @@
 cube: 
-	g++ cube10.cpp -lGLU -lGLEW -lglfw
+	g++ cube.cpp -lGLU -lGLEW -lglfw -o cube
