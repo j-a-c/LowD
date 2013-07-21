@@ -64,13 +64,13 @@ ChunkManager::ChunkManager()
 
     _offset = RENDER_SIZE / 2;
 
-    _renderOffsetX = int(RENDER_SIZE / 2) * CHUNK_SIZE * BLOCK_HEIGHT;
-    _renderOffsetY = int(RENDER_SIZE / 2) * CHUNK_SIZE * BLOCK_LENGTH;
-    _renderOffsetZ = int(RENDER_SIZE / 2) * CHUNK_SIZE * BLOCK_WIDTH;
+    _renderOffsetX = int(RENDER_SIZE / 2) * CHUNK_WIDTH * BLOCK_HEIGHT;
+    _renderOffsetY = int(RENDER_SIZE / 2) * CHUNK_HEIGHT * BLOCK_LENGTH;
+    _renderOffsetZ = int(RENDER_SIZE / 2) * CHUNK_LENGTH * BLOCK_WIDTH;
 
-    _height = CHUNK_SIZE * BLOCK_HEIGHT;
-    _length = CHUNK_SIZE * BLOCK_LENGTH;
-    _width = CHUNK_SIZE * BLOCK_WIDTH;
+    _height = CHUNK_HEIGHT* BLOCK_HEIGHT;
+    _length = CHUNK_LENGTH * BLOCK_LENGTH;
+    _width = CHUNK_WIDTH * BLOCK_WIDTH;
 
     std::cout << "\tEntering ChunkManager()" << std::endl;
 
@@ -146,9 +146,9 @@ void ChunkManager::render()
             {
                 glPushMatrix();
                 glTranslatef(
-                        x*CHUNK_SIZE*BLOCK_WIDTH - _renderOffsetX,
-                        y*CHUNK_SIZE*BLOCK_HEIGHT - _renderOffsetY,
-                        z*CHUNK_SIZE*BLOCK_LENGTH - _renderOffsetZ);
+                        x*CHUNK_WIDTH*BLOCK_WIDTH - _renderOffsetX,
+                        y*CHUNK_HEIGHT*BLOCK_HEIGHT - _renderOffsetY,
+                        z*CHUNK_LENGTH*BLOCK_LENGTH - _renderOffsetZ);
                 _chunks[x][y][z]->render();
                 glPopMatrix();
             }
@@ -291,9 +291,9 @@ bool ChunkManager::isActive(Vector3D position)
 
     // Offsets from the center Chunk
     // Block # / CHUNK_SIZE = Chunk offset
-    int offsetx = int(position.x / BLOCK_WIDTH) / CHUNK_SIZE; 
-    int offsety = int(position.y / BLOCK_HEIGHT) / CHUNK_SIZE;
-    int offsetz = int(position.z / BLOCK_LENGTH) / CHUNK_SIZE; 
+    int offsetx = int(position.x / BLOCK_WIDTH) / CHUNK_WIDTH; 
+    int offsety = int(position.y / BLOCK_HEIGHT) / CHUNK_HEIGHT;
+    int offsetz = int(position.z / BLOCK_LENGTH) / CHUNK_LENGTH; 
 
     // Distance from (0,0) in center Chunk
     // int(position.x / BLOCK_WIDTH) = Distance offset
@@ -302,12 +302,12 @@ bool ChunkManager::isActive(Vector3D position)
     int distz = int(position.z / BLOCK_LENGTH);
 
     // Translate to a position within Chunk
-    while (distx >= CHUNK_SIZE) distx -= CHUNK_SIZE;
-    while (distx < 0) distx += CHUNK_SIZE;
-    while (disty >= CHUNK_SIZE) disty -= CHUNK_SIZE;
-    while (disty < 0) disty += CHUNK_SIZE;
-    while (distz >= CHUNK_SIZE) distz -= CHUNK_SIZE;
-    while (distz < 0) distz += CHUNK_SIZE;
+    while (distx >= CHUNK_WIDTH) distx -= CHUNK_WIDTH;
+    while (distx < 0) distx += CHUNK_WIDTH;
+    while (disty >= CHUNK_HEIGHT) disty -= CHUNK_HEIGHT;
+    while (disty < 0) disty += CHUNK_HEIGHT;
+    while (distz >= CHUNK_LENGTH) distz -= CHUNK_LENGTH;
+    while (distz < 0) distz += CHUNK_LENGTH;
 
     std::cout << "\tOffsets: " 
         << offsetx << " " << offsety << " " << offsetz << std::endl;

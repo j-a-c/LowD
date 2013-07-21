@@ -41,22 +41,22 @@ class Chunk
 Chunk::Chunk()
 {
     // Create the blocks
-    _blocks = new Block**[CHUNK_SIZE];
-    for (int x = 0; x < CHUNK_SIZE; x++)
+    _blocks = new Block**[CHUNK_WIDTH];
+    for (int x = 0; x < CHUNK_WIDTH; x++)
     {
-        _blocks[x] = new Block*[CHUNK_SIZE];
+        _blocks[x] = new Block*[CHUNK_HEIGHT];
 
-        for (int y = 0; y < CHUNK_SIZE; y++)
-            _blocks[x][y] = new Block[CHUNK_SIZE];
+        for (int y = 0; y < CHUNK_HEIGHT; y++)
+            _blocks[x][y] = new Block[CHUNK_LENGTH];
     }
 }
 
 Chunk::~Chunk()
 {
     // Delete the blocks
-    for (int x = 0; x < CHUNK_SIZE; ++x)
+    for (int x = 0; x < CHUNK_WIDTH; ++x)
     {
-        for (int y = 0; y < CHUNK_SIZE; ++y)
+        for (int y = 0; y < CHUNK_HEIGHT; ++y)
         {
             delete [] _blocks[x][y];
         }
@@ -68,9 +68,9 @@ Chunk::~Chunk()
 
 void Chunk::reset()
 {
-    for (int x = 0; x < CHUNK_SIZE; x++)
-        for (int y = 0; y < CHUNK_SIZE; y++)
-            for (int z = 0; z < CHUNK_SIZE; z++)
+    for (int x = 0; x < CHUNK_WIDTH; x++)
+        for (int y = 0; y < CHUNK_HEIGHT; y++)
+            for (int z = 0; z < CHUNK_LENGTH; z++)
                 _blocks[x][y][z].setType(BlockType_Air);
 }
 
@@ -83,11 +83,11 @@ void Chunk::createMesh()
     _theChunk = glGenLists(1);
     glNewList(_theChunk, GL_COMPILE);
 
-    for (int x = 0; x < CHUNK_SIZE; x++)
+    for (int x = 0; x < CHUNK_WIDTH; x++)
     {
-        for (int y = 0; y < CHUNK_SIZE; y++)
+        for (int y = 0; y < CHUNK_HEIGHT; y++)
         {
-            for (int z = 0; z < CHUNK_SIZE; z++)
+            for (int z = 0; z < CHUNK_LENGTH; z++)
             {
                 // Don't render inactive blocks
                 if(_blocks[x][y][z].getType() == BlockType_Air)
@@ -126,26 +126,26 @@ void Chunk::generate(int xpos, int ypos, int zpos)
     int offset = noise((0/smoothness)*scale, (0/smoothness)*scale,seed)*maxHeight;
 
     // Set height
-    for (int x = 0; x < CHUNK_SIZE; x++)
-        for (int z = 0; z < CHUNK_SIZE; z++)
+    for (int x = 0; x < CHUNK_WIDTH; x++)
+        for (int z = 0; z < CHUNK_LENGTH; z++)
         {
             // Height at this spot
-            int blockx = xpos*CHUNK_SIZE + x;
-            int blockz = zpos*CHUNK_SIZE + z;
+            int blockx = xpos*CHUNK_WIDTH+ x;
+            int blockz = zpos*CHUNK_LENGTH+ z;
             float n = noise((blockx/smoothness)*scale, (blockz/smoothness)*scale, seed);       
             int heightHere = maxHeight * n - offset;
 
             int heightY = 0;
 
             // Is height located in this chunk?
-            while (heightHere > CHUNK_SIZE)
+            while (heightHere > CHUNK_HEIGHT)
             {
-                heightHere -= CHUNK_SIZE;
+                heightHere -= CHUNK_HEIGHT;
                 heightY++;
             }
             while (heightHere < 0)
             {
-                heightHere += CHUNK_SIZE;
+                heightHere += CHUNK_HEIGHT;
                 heightY--;
             }
 

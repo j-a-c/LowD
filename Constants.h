@@ -9,7 +9,9 @@
 
 // Even square
 // Length, Width, Height of a Chunk (in Blocks)
-#define CHUNK_SIZE 16 
+#define CHUNK_HEIGHT 16 
+#define CHUNK_LENGTH 16 
+#define CHUNK_WIDTH 16 
 
 // Odd number
 // Length, Width, Height of Render window (in Chunks)
@@ -21,8 +23,5 @@
 #define PLAYER_HALF_WIDTH = 0.5
 #define PLAYER_HALF_LENGTH = 0.5
 
-
-// Terrain generation
-#define TERRAIN_FIRST_SIZE 3
 
 #endif
