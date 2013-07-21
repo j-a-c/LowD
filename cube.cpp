@@ -7,6 +7,7 @@
 
 //TODO delete after debug
 #include <iostream>
+#include "Simplex.h"
 
 #include "Player.h"
 #include "ChunkManager.h"

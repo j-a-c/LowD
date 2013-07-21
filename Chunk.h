@@ -2,6 +2,7 @@
 #define CHUNK_H
 
 #include "Block.h"
+#include "BlockType.h"
 #include "Constants.h"
 #include "Simplex.h"
 #include "math/Vector3D.h"
@@ -28,7 +29,6 @@ class Chunk
         void render();
 
         bool isActive(int x, int y, int z);
-        void setActive(int x, int y, int z);
 
     private:
         // Display list for this chunk
@@ -71,7 +71,7 @@ void Chunk::reset()
     for (int x = 0; x < CHUNK_SIZE; x++)
         for (int y = 0; y < CHUNK_SIZE; y++)
             for (int z = 0; z < CHUNK_SIZE; z++)
-                _blocks[x][y][z].setActive(false);
+                _blocks[x][y][z].setType(BlockType_Air);
 }
 
 
@@ -90,7 +90,7 @@ void Chunk::createMesh()
             for (int z = 0; z < CHUNK_SIZE; z++)
             {
                 // Don't render inactive blocks
-                if(_blocks[x][y][z].isActive() == false)
+                if(_blocks[x][y][z].getType() == BlockType_Air)
                     continue;
 
                 glPushMatrix();
@@ -110,54 +110,92 @@ void Chunk::createMesh()
  */
 void Chunk::generate(int xpos, int ypos, int zpos)
 {
-    /*
-       for (int x = 0; x < CHUNK_SIZE; x++)
-       for (int y = 0; y < CHUNK_SIZE; y++)
-       for (int z = 0; z < CHUNK_SIZE; z++) 
-       {
-       if ( simplex_noise(1, xpos+x, ypos+y, zpos+z) > 1.1 )
-       if ( (ypos == 0) && (y == 0 || 
-       (xpos == 1 && zpos == -1 && y == 2) || 
-       (z== 2 && x==1 && y == 3 )) ) 
-
-       _blocks[x][y][z].setActive(true);
-       else
-       _blocks[x][y][z].setActive(false);
-       }
-       */
 
     // First pass terrain
-
+    
     // Seed and max height
     int seed = 100;
     int maxHeight = 10;
+    
+    // How spread apart values are
+    float scale = 1.0f / 4.0f;
+    // How jagged terrain is
+    int smoothness = 8;
 
     // Base height at player start position 
-    int offset = noise(0,0,seed)*maxHeight;
+    int offset = noise((0/smoothness)*scale, (0/smoothness)*scale,seed)*maxHeight;
 
-    float n = noise(xpos, zpos, seed);       
-    int heightHere = maxHeight * n - offset;
-
-    int heightY = 0;
-
-    while (heightHere > CHUNK_SIZE)
-    {
-    heightHere -= CHUNK_SIZE;
-    heightY++;
-    }
-
-    while (heightHere < 0)
-    {
-    heightHere += CHUNK_SIZE;
-    heightY--;
-    }
-
-    if (heightY == ypos)
+    // Set height
     for (int x = 0; x < CHUNK_SIZE; x++)
-    //for(int y = 0; y < heightHere; y++)
-    for (int z = 0; z < CHUNK_SIZE; z++)
-    _blocks[x][heightHere][z].setActive(true);
+        for (int z = 0; z < CHUNK_SIZE; z++)
+        {
+            // Height at this spot
+            int blockx = xpos*CHUNK_SIZE + x;
+            int blockz = zpos*CHUNK_SIZE + z;
+            float n = noise((blockx/smoothness)*scale, (blockz/smoothness)*scale, seed);       
+            int heightHere = maxHeight * n - offset;
 
+            int heightY = 0;
+
+            // Is height located in this chunk?
+            while (heightHere > CHUNK_SIZE)
+            {
+                heightHere -= CHUNK_SIZE;
+                heightY++;
+            }
+            while (heightHere < 0)
+            {
+                heightHere += CHUNK_SIZE;
+                heightY--;
+            }
+
+
+            if (heightY == ypos)
+                for (int y = 0; y <= heightHere; y++)
+                    _blocks[x][y][z].setType(BlockType_Grass);
+        }
+
+
+
+    /*
+    // seed and max height
+    int seed = 100;
+    int maxheight = 10;
+    
+    // how spread apart values are
+    float scale = 1.0f / 4.0f;
+    // how jagged terrain is
+    int smoothness = 2;
+
+    // base height at player start position 
+    int offset = noise((0/smoothness)*scale, (0/smoothness)*scale,seed)*maxheight;
+
+    // height at this spot
+    float n = noise((xpos/smoothness)*scale, (zpos/smoothness)*scale, seed);       
+    std::cout << "\t\tnoise: " << n << std::endl;
+    int heighthere = maxheight * n - offset;
+
+    int heighty = 0;
+
+    // is height located in this chunk?
+    while (heighthere > chunk_size)
+    {
+        heighthere -= chunk_size;
+        heighty++;
+    }
+
+    while (heighthere < 0)
+    {
+        heighthere += chunk_size;
+        heighty--;
+    }
+
+    if (heighty == ypos)
+        for (int x = 0; x < chunk_size; x++)
+        //for(int y = 0; y < heighthere; y++)
+            for (int z = 0; z < chunk_size; z++)
+                _blocks[x][heighthere][z].setactive(true);
+    */
 
 
     /*
@@ -204,18 +242,11 @@ void Chunk::render()
 }
 
 
-
-void Chunk::setActive(int x, int y, int z)
-{
-    _blocks[x][y][z].setActive(true);
-}
-
-
 bool Chunk::isActive(int x, int y, int z)
 {
     std::cout << "\t\tEntering Chunk.isActive()" << std::endl;
 
-    bool ret = _blocks[x][y][z].isActive();
+    bool ret = _blocks[x][y][z].getType() != BlockType_Air;
 
     std::cout << "\t\tExiting Chunk.isActive()" << std::endl;
 

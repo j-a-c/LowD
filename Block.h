@@ -1,6 +1,7 @@
 #ifndef BLOCK_H
 #define BLOCK_H
 
+#include "BlockType.h"
 #include "Constants.h"
 
 /**
@@ -10,20 +11,7 @@
  *
 */
 
-// TODO
-enum BlockType
-{
-	BlockType_Default = 0,
 
-	BlockType_Grass,
-	BlockType_Dirt,
-	BlockType_Water,
-	BlockType_Stone,
-    BlockType_Wood,
-    BlockType_Sand,
-
-    BlockType_NumTypes,
-};
 
 class Block
 {
@@ -33,21 +21,19 @@ class Block
 
         void createBlock();
 
-        bool isActive();
-        void setActive(bool active);
+
+        BlockType getType();
+        void setType(BlockType blockType);
 
     private:
-        // Is block active
-        bool _active;
-
+        // BlockType default is Air
         BlockType _blockType;
 };
 
 Block::Block()
 {
-    // Each block is by default inactive until the ChunkManager
-    // sets it to active
-    _active = false;
+    // Each block is by default Air until the ChunkManager changes its
+    _blockType = BlockType_Air;
 }
 
 Block::~Block()
@@ -120,14 +106,14 @@ void Block::createBlock()
 
 }
 
-void Block::setActive(bool active)
+void Block::setType(BlockType blockType)
 {
-    _active = active;
+    _blockType = blockType;
 }
 
-bool Block::isActive()
+BlockType Block::getType()
 {
-    return _active;
+    return _blockType;
 }
 
 #endif
