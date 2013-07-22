@@ -89,9 +89,21 @@ void Chunk::createMesh()
         {
             for (int z = 0; z < CHUNK_LENGTH; z++)
             {
-                // Don't render inactive blocks
+                // Don't render inactive blocks (Air)
                 if(_blocks[x][y][z].getType() == BlockType_Air)
                     continue;
+
+                // TODO check chunk next to it
+                // Don't render blocks not touching air (e.g. not visable)
+                if ( (x == 0 ? false : _blocks[x-1][y][z].getType() != BlockType_Air) &&
+                        (x == CHUNK_WIDTH-1 ? false : _blocks[x+1][y][z].getType() != BlockType_Air) &&
+                        (y == 0 ? false : _blocks[x][y-1][z].getType() != BlockType_Air) &&
+                        (y == CHUNK_HEIGHT-1 ? false : _blocks[x][y+1][z].getType() != BlockType_Air) &&
+                        (z == 0 ? false : _blocks[x][y][z-1].getType() != BlockType_Air) &&
+                        (z == CHUNK_WIDTH-1 ? false: _blocks[x][y][z+1].getType() != BlockType_Air) )
+                {
+                    continue;
+                }
 
                 glPushMatrix();
                 glTranslatef(x*BLOCK_WIDTH, y*BLOCK_HEIGHT, z*BLOCK_LENGTH);
@@ -149,9 +161,14 @@ void Chunk::generate(int xpos, int ypos, int zpos)
                 heightY--;
             }
 
-
+            // Height is located in chunk
             if (heightY == ypos)
                 for (int y = 0; y <= heightHere; y++)
+                    _blocks[x][y][z].setType(BlockType_Grass);
+
+            // Height is above chunk
+            else if (heightY > ypos)
+                for (int y = 0; y < CHUNK_HEIGHT; y++)
                     _blocks[x][y][z].setType(BlockType_Grass);
         }
 
