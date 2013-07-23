@@ -8,5 +8,3 @@ debug
 # Anything not C++ related
 *.py
 
-# Executable
-cube
