@@ -93,21 +93,23 @@ void Chunk::createMesh()
                 if(_blocks[x][y][z].getType() == BlockType_Air)
                     continue;
 
-                // TODO check chunk next to it
-                // Don't render blocks not touching air (e.g. not visable)
-                if ( (x == 0 ? false : _blocks[x-1][y][z].getType() != BlockType_Air) &&
-                        (x == CHUNK_WIDTH-1 ? false : _blocks[x+1][y][z].getType() != BlockType_Air) &&
-                        (y == 0 ? false : _blocks[x][y-1][z].getType() != BlockType_Air) &&
-                        (y == CHUNK_HEIGHT-1 ? false : _blocks[x][y+1][z].getType() != BlockType_Air) &&
-                        (z == 0 ? false : _blocks[x][y][z-1].getType() != BlockType_Air) &&
-                        (z == CHUNK_WIDTH-1 ? false: _blocks[x][y][z+1].getType() != BlockType_Air) )
-                {
-                    continue;
-                }
+
 
                 glPushMatrix();
                 glTranslatef(x*BLOCK_WIDTH, y*BLOCK_HEIGHT, z*BLOCK_LENGTH);
-                _blocks[x][y][z].createBlock();
+
+                // TODO check chunk next to it
+                // Don't render blocks not touching air (e.g. not visable)
+                if ( (x == 0 ? true : _blocks[x-1][y][z].getType() == BlockType_Air)
+                    _blocks[x][y][z].createFront();
+
+                 //       (x == CHUNK_WIDTH-1 ? false : _blocks[x+1][y][z].getType() != BlockType_Air) &&
+                   //     (y == 0 ? false : _blocks[x][y-1][z].getType() != BlockType_Air) &&
+                    //    (y == CHUNK_HEIGHT-1 ? false : _blocks[x][y+1][z].getType() != BlockType_Air) &&
+                     //   (z == 0 ? false : _blocks[x][y][z-1].getType() != BlockType_Air) &&
+                     //   (z == CHUNK_WIDTH-1 ? false: _blocks[x][y][z+1].getType() != BlockType_Air) )
+
+                //_blocks[x][y][z].createBlock();
                 glPopMatrix();
             }
         }
