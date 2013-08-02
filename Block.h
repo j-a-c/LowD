@@ -175,6 +175,7 @@ void Block::createLeft()
     
     glColor3f(0.0, 1.0, 0.0);
 
+    // Left
     glNormal3f(-1.0f, 0.0f, 0.0f);
     glVertex3f(0.0f-width, 0.0f-height, 0.0f+length); //FB
     glVertex3f(0.0f-width, 0.0f+height, 0.0f+length); //FT
