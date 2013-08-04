@@ -136,13 +136,13 @@ void enable()
 	glEnable(GL_COLOR_MATERIAL);
     
 
-    //GLfloat light_diffuse[] = {1.0, 1.0, 1.0, 1.0};  /* White diffuse light. */
+    GLfloat light_diffuse[] = {1.0, 1.0, 1.0, 1.0};  /* White diffuse light. */
     //GLfloat light_position[] = {1.0, 1.0, 1.0, 0.0};  /* Infinite light location. */
 
     /* Enable a single OpenGL light. */
-    //glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
     //glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-    //glEnable(GL_LIGHT0);
+    glEnable(GL_LIGHT0);
     //glEnable(GL_LIGHTING);
 	//glEnable(GL_LIGHT1); //Enable light #1
 	//glEnable(GL_NORMALIZE); //Automatically normalize normals

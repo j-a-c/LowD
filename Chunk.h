@@ -86,45 +86,51 @@ void Chunk::createMesh()
     _theChunk = glGenLists(1);
     glNewList(_theChunk, GL_COMPILE);
 
+
+    Block currentBlockToRender;
     for (int x = 0; x < CHUNK_WIDTH; x++)
     {
         for (int y = 0; y < CHUNK_HEIGHT; y++)
         {
             for (int z = 0; z < CHUNK_LENGTH; z++)
             {
+                currentBlockToRender = _blocks[x][y][z];
+
                 // Don't render inactive blocks (Air)
-                if(_blocks[x][y][z].getType() == BlockType_Air)
+                if(currentBlockToRender.getType() == BlockType_Air)
                     continue;
 
                 // TODO skip hidden blocks
 
                 //glPushMatrix();
-                // TODO cache block instance
-                // TODO cache translate distance
-                glTranslatef(x*BLOCK_WIDTH, y*BLOCK_HEIGHT, z*BLOCK_LENGTH);
+                float translateDistX = x * BLOCK_WIDTH;
+                float translateDistY = y * BLOCK_HEIGHT;
+                float translateDistZ = z * BLOCK_LENGTH;
+
+                glTranslatef(translateDistX, translateDistY, translateDistZ);
 
                 // Don't render blocks not touching air (e.g. not visable)
                 if (x == 0 ? true : _blocks[x-1][y][z].getType() == BlockType_Air)
-                    _blocks[x][y][z].createLeft();
+                    currentBlockToRender.createLeft();
 
                 if (x == CHUNK_WIDTH-1 ? true : _blocks[x+1][y][z].getType() == BlockType_Air)
-                    _blocks[x][y][z].createRight();
+                    currentBlockToRender.createRight();
 
                 if (y == 0 ? true : _blocks[x][y-1][z].getType() == BlockType_Air)
-                    _blocks[x][y][z].createBottom();
+                    currentBlockToRender.createBottom();
                 
                 if (y == CHUNK_HEIGHT-1 ? true : _blocks[x][y+1][z].getType() == BlockType_Air)
-                    _blocks[x][y][z].createTop();
+                    currentBlockToRender.createTop();
                 
                 if (z == 0 ? true : _blocks[x][y][z-1].getType() == BlockType_Air)
-                    _blocks[x][y][z].createBack();
+                    currentBlockToRender.createBack();
 
                 if (z == CHUNK_WIDTH-1 ? true : _blocks[x][y][z+1].getType() == BlockType_Air)
-                    _blocks[x][y][z].createFront();
+                    currentBlockToRender.createFront();
 
                 //_blocks[x][y][z].createBlock();
                 
-                glTranslatef(-x*BLOCK_WIDTH, -y*BLOCK_HEIGHT, -z*BLOCK_LENGTH);
+                glTranslatef(-translateDistX, -translateDistY, -translateDistZ);
                 //glPopMatrix();
             }
         }
