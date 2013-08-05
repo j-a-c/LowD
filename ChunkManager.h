@@ -140,11 +140,18 @@ void ChunkManager::render()
 {
     std::cout << "\tEntering ChunkManager.render()" << std::endl;
 
+    // TODO render spherically from center outwards
+    // render visible
     for (int x = 0; x < RENDER_SIZE; x++)
         for (int y = 0; y < RENDER_SIZE; y++)
             for (int z = 0; z < RENDER_SIZE; z++)
             {
                 glPushMatrix();
+                // float translateX = x*CHUNK_WIDTH*BLOCK_WIDTH - _renderOffsetX;
+                // float translateY = y*CHUNK_HEIGHT*BLOCK_HEIGHT - _renderOffsetY;
+                // float translateZ = z*CHUNK_LENGTH*BLOCK_LENGTH - _renderOffsetZ;
+                // glTranslatef(translateX, translateY, translateZ);
+
                 glTranslatef(
                         x*CHUNK_WIDTH*BLOCK_WIDTH - _renderOffsetX,
                         y*CHUNK_HEIGHT*BLOCK_HEIGHT - _renderOffsetY,
