@@ -12,7 +12,7 @@
 #include "Player.h"
 #include "ChunkManager.h"
 #include "Shader.h"
-#include "math/Vector3D.h"
+#include "datastructures/Vector3D.h"
 
 #define _maxspeed 6
 #define _gravity 20.0
@@ -103,7 +103,7 @@ void init()
     glViewport(0, 0, (GLsizei)desktop.Width, (GLsizei)desktop.Height);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    // Set the perspective (angle of sight, width, height, depth)
+    // Set the perspective (angle of sight, perspective, depth)
     gluPerspective(60, (GLfloat)desktop.Width/ (GLfloat)desktop.Height, 0.1, 100.0); 
     glMatrixMode(GL_MODELVIEW);
 

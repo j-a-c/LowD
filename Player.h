@@ -2,7 +2,7 @@
 #define PLAYER_H 
 
 #include "Entity.h"
-#include "math/Vector3D.h"
+#include "datastructures/Vector3D.h"
 
 static const float _maxVerticalAngle = 80.0f;
 

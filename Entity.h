@@ -1,7 +1,7 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include "math/Vector3D.h"
+#include "datastructures/Vector3D.h"
 
 /**
  * Class to represent a movable entity in the world

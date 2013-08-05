@@ -5,7 +5,7 @@
 #include "BlockType.h"
 #include "Constants.h"
 #include "Simplex.h"
-#include "math/Vector3D.h"
+#include "datastructures/Vector3D.h"
 
 // TODO delete after debug
 #include <iostream>
