@@ -86,10 +86,6 @@ void Chunk::createMesh()
     _theChunk = glGenLists(1);
     glNewList(_theChunk, GL_COMPILE);
 
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    glBegin(GL_QUADS);
-
     Block currentBlockToRender;
     for (int x = 0; x < CHUNK_WIDTH; x++)
     {
@@ -137,7 +133,6 @@ void Chunk::createMesh()
         }
     }
 
-    glEnd();
     glEndList();
 
 }
