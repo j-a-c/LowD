@@ -121,9 +121,9 @@ void Block::createFront()
     float width = BLOCK_WIDTH / 2.0f;
     
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    glBegin(GL_QUADS);
+    //glBegin(GL_QUADS);
     
     glColor3f(0.0, 1.0, 0.0);
 
@@ -134,7 +134,7 @@ void Block::createFront()
     glVertex3f(0.0f-width, 0.0f+height, 0.0f+length); // TL
     glVertex3f(0.0f-width, 0.0f-height, 0.0f+length); // BL
 
-    glEnd();
+    //glEnd();
 }
 
 void Block::createBack()
@@ -145,9 +145,9 @@ void Block::createBack()
     float width = BLOCK_WIDTH / 2.0f;
     
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    glBegin(GL_QUADS);
+    //glBegin(GL_QUADS);
     
     glColor3f(0.0, 1.0, 0.0);
 
@@ -158,7 +158,7 @@ void Block::createBack()
     glVertex3f(0.0f-width, 0.0f+height, 0.0f-length); // TL
     glVertex3f(0.0f-width, 0.0f-height, 0.0f-length); // BL
 
-    glEnd();
+    //glEnd();
 }
 
 void Block::createLeft()
@@ -169,9 +169,9 @@ void Block::createLeft()
     float width = BLOCK_WIDTH / 2.0f;
     
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    glBegin(GL_QUADS);
+    //glBegin(GL_QUADS);
     
     glColor3f(0.0, 1.0, 0.0);
 
@@ -182,7 +182,7 @@ void Block::createLeft()
     glVertex3f(0.0f-width, 0.0f+height, 0.0f-length); //BT
     glVertex3f(0.0f-width, 0.0f-height, 0.0f-length); //BB
 
-    glEnd();
+    //glEnd();
 }
 
 void Block::createRight()
@@ -193,9 +193,9 @@ void Block::createRight()
     float width = BLOCK_WIDTH / 2.0f;
     
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    glBegin(GL_QUADS);
+    //glBegin(GL_QUADS);
     
     glColor3f(0.0, 1.0, 0.0);
 
@@ -206,7 +206,7 @@ void Block::createRight()
     glVertex3f(0.0f+width, 0.0f+height, 0.0f+length); // FT
     glVertex3f(0.0f+width, 0.0f+height, 0.0f-length); // FB
 
-    glEnd();
+    //glEnd();
 }
 
 void Block::createTop()
@@ -217,9 +217,9 @@ void Block::createTop()
     float width = BLOCK_WIDTH / 2.0f;
     
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    glBegin(GL_QUADS);
+    //glBegin(GL_QUADS);
     
     glColor3f(0.0, 1.0, 0.0);
 
@@ -230,7 +230,7 @@ void Block::createTop()
     glVertex3f(0.0f+width, 0.0f+height, 0.0f-length); //BR
     glVertex3f(0.0f-width, 0.0f+height, 0.0f-length); // BL
 
-    glEnd();
+    //glEnd();
 }
 
 void Block::createBottom()
@@ -241,9 +241,9 @@ void Block::createBottom()
     float width = BLOCK_WIDTH / 2.0f;
     
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    glBegin(GL_QUADS);
+    //glBegin(GL_QUADS);
     
     glColor3f(0.0, 1.0, 0.0);
 
@@ -254,7 +254,7 @@ void Block::createBottom()
     glVertex3f(0.0f+width, 0.0f-height, 0.0f+length); // FR
     glVertex3f(0.0f-width, 0.0f-height, 0.0f+length); // FL
 
-    glEnd();
+    //glEnd();
 }
 
 void Block::setType(BlockType blockType)

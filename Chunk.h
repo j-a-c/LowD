@@ -81,12 +81,14 @@ void Chunk::reset()
 void Chunk::createMesh()
 {
 
-    // TODO greedy mesh
+    // TODO greedy strip mesh
+
 
     _theChunk = glGenLists(1);
     glNewList(_theChunk, GL_COMPILE);
 
     Block currentBlockToRender;
+
     for (int x = 0; x < CHUNK_WIDTH; x++)
     {
         for (int y = 0; y < CHUNK_HEIGHT; y++)
@@ -101,13 +103,16 @@ void Chunk::createMesh()
 
                 // TODO skip hidden blocks
 
-                //glPushMatrix();
+                glPushMatrix();
+
                 float translateDistX = x * BLOCK_WIDTH;
                 float translateDistY = y * BLOCK_HEIGHT;
                 float translateDistZ = z * BLOCK_LENGTH;
 
                 glTranslatef(translateDistX, translateDistY, translateDistZ);
 
+
+    glBegin(GL_QUADS);
                 // Don't render blocks not touching air (e.g. not visable)
                 if (x == 0 ? true : _blocks[x-1][y][z].getType() == BlockType_Air)
                     currentBlockToRender.createLeft();
@@ -127,8 +132,10 @@ void Chunk::createMesh()
                 if (z == CHUNK_WIDTH-1 ? true : _blocks[x][y][z+1].getType() == BlockType_Air)
                     currentBlockToRender.createFront();
                 
-                glTranslatef(-translateDistX, -translateDistY, -translateDistZ);
-                //glPopMatrix();
+    glEnd();
+                //glTranslatef(-translateDistX, -translateDistY, -translateDistZ);
+                glPopMatrix();
+
             }
         }
     }
@@ -191,82 +198,6 @@ void Chunk::generate(int xpos, int ypos, int zpos)
                 for (int y = 0; y < CHUNK_HEIGHT; y++)
                     _blocks[x][y][z].setType(BlockType_Grass);
         }
-
-
-
-    /*
-    // seed and max height
-    int seed = 100;
-    int maxheight = 10;
-    
-    // how spread apart values are
-    float scale = 1.0f / 4.0f;
-    // how jagged terrain is
-    int smoothness = 2;
-
-    // base height at player start position 
-    int offset = noise((0/smoothness)*scale, (0/smoothness)*scale,seed)*maxheight;
-
-    // height at this spot
-    float n = noise((xpos/smoothness)*scale, (zpos/smoothness)*scale, seed);       
-    std::cout << "\t\tnoise: " << n << std::endl;
-    int heighthere = maxheight * n - offset;
-
-    int heighty = 0;
-
-    // is height located in this chunk?
-    while (heighthere > chunk_size)
-    {
-        heighthere -= chunk_size;
-        heighty++;
-    }
-
-    while (heighthere < 0)
-    {
-        heighthere += chunk_size;
-        heighty--;
-    }
-
-    if (heighty == ypos)
-        for (int x = 0; x < chunk_size; x++)
-        //for(int y = 0; y < heighthere; y++)
-            for (int z = 0; z < chunk_size; z++)
-                _blocks[x][heighthere][z].setactive(true);
-    */
-
-
-    /*
-    float intensity = 5;
-    float width = 100;
-
-    for (int x = 0; x < CHUNK_SIZE; x++)
-        for(int y = 0; y < CHUNK_SIZE; y++)
-            for (int z = 0; z < CHUNK_SIZE; z++)
-            {
-                float x1 = CHUNK_SIZE*xpos + x;
-                float y1 = CHUNK_SIZE*ypos + y;
-                float z1 = CHUNK_SIZE*zpos + z;
-
-                float xd = x1 - width*0.25;
-                float yd = y1 - width*0.20;
-                float zd = z1 - width*0.25;
-                
-                if(yd > 0) 
-                    yd *= yd*0.05;
-                float xz = noise(x1, z1);
-                float distance = (xd*xd+yd*yd*intensity+zd*zd)*0.0004;
-                float density = noise(x1/intensity, y1/intensity, z1/intensity) - distance;
-                if(density > -0.75){
-                    _blocks[x][y][z].setActive(true);
-                }
-                if(density > -0.85){
-                    _blocks[x][y][z].setActive(true);
-                }
-                if(density > -1.0){
-                    y1 > intensity+xz*4 ? _blocks[x][y][z].setActive(false) : _blocks[x][y][z].setActive(true);
-                }
-            }
-        */
 }
 
 
@@ -275,6 +206,8 @@ void Chunk::generate(int xpos, int ypos, int zpos)
  */
 void Chunk::render()
 {
+
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glCallList(_theChunk);
 }
 
