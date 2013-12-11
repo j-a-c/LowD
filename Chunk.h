@@ -7,6 +7,8 @@
 #include "Simplex.h"
 #include "datastructures/Vector3D.h"
 
+#include <vector>
+
 // TODO delete after debug
 #include <iostream>
 
@@ -35,12 +37,17 @@ class Chunk
         GLuint _theChunk;
         // Data for blocks in this chuck
         Block*** _blocks;
+        std::vector<Block> _nblocks;
 
 };
 
 Chunk::Chunk()
 {
     // Create the blocks
+    for(int i = 0; i < CHUNK_WIDTH*CHUNK_HEIGHT*CHUNK_LENGTH; i++)
+        _nblocks.push_back(Block());
+
+
     _blocks = new Block**[CHUNK_WIDTH];
     for (int x = 0; x < CHUNK_WIDTH; x++)
     {
@@ -68,6 +75,9 @@ Chunk::~Chunk()
 
 void Chunk::reset()
 {
+    for (auto &block: _nblocks) 
+        block.setType(BlockType_Air);
+
     for (int x = 0; x < CHUNK_WIDTH; x++)
         for (int y = 0; y < CHUNK_HEIGHT; y++)
             for (int z = 0; z < CHUNK_LENGTH; z++)
