@@ -3,9 +3,9 @@
 
 // Any number
 // Length, Width, Height of a Block
-#define BLOCK_HEIGHT 0.5
-#define BLOCK_LENGTH 0.5
-#define BLOCK_WIDTH 0.5
+#define BLOCK_HEIGHT 1.0
+#define BLOCK_LENGTH 1.0
+#define BLOCK_WIDTH 1.0
 
 // Even square
 // Length, Width, Height of a Chunk (in Blocks)

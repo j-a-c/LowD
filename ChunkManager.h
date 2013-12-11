@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <math.h>
+#include <utility>
 
 
 /**
@@ -249,9 +250,10 @@ Vector3D ChunkManager::update(Vector3D position)
                     std::cout << "\tSwapping " << x << "," << y << "," << z
                         << " with " << xSwap << "," << ySwap << "," << zSwap << std::endl; 
 
-                    swap =  _chunks[x][y][z];
-                    _chunks[x][y][z] =  _chunks[xSwap][ySwap][zSwap];
-                    _chunks[xSwap][ySwap][zSwap] = swap; 
+                    //swap =  _chunks[x][y][z];
+                    //_chunks[x][y][z] =  _chunks[xSwap][ySwap][zSwap];
+                    //_chunks[xSwap][ySwap][zSwap] = swap;
+                    std::swap(_chunks[x][y][z], _chunks[xSwap][ySwap][zSwap]);
                 }
 
         // TODO move into previous loop?
