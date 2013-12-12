@@ -44,40 +44,27 @@ class ChunkManager
         int _z;
 
         // Offset bc the player is assumed to be in the center of render cube
-        int _offset;
+        const int _offset = RENDER_SIZE / 2;
 
         // Render offset bc player is in center of render cube
-        int _renderOffsetX;
-        int _renderOffsetY;
-        int _renderOffsetZ;
+        const int _renderOffsetX = int(RENDER_SIZE / 2) * CHUNK_WIDTH * BLOCK_HEIGHT;
+        const int _renderOffsetY = int(RENDER_SIZE / 2) * CHUNK_HEIGHT * BLOCK_LENGTH;
+        const int _renderOffsetZ = int(RENDER_SIZE / 2) * CHUNK_LENGTH * BLOCK_WIDTH;
+
 
         // Height, length, width in units
-        int _height;
-        int _length;
-        int _width; 
+        const int _height = CHUNK_HEIGHT* BLOCK_HEIGHT;
+        const int _length = CHUNK_LENGTH * BLOCK_LENGTH;
+        const int _width = CHUNK_WIDTH * BLOCK_WIDTH;
+
 
 };
 
-ChunkManager::ChunkManager()
+ChunkManager::ChunkManager() : _x{0}, _y{0}, _z{0}
 {
-    _x = 0;
-    _y = 0;
-    _z = 0;
-
-    _offset = RENDER_SIZE / 2;
-
-    _renderOffsetX = int(RENDER_SIZE / 2) * CHUNK_WIDTH * BLOCK_HEIGHT;
-    _renderOffsetY = int(RENDER_SIZE / 2) * CHUNK_HEIGHT * BLOCK_LENGTH;
-    _renderOffsetZ = int(RENDER_SIZE / 2) * CHUNK_LENGTH * BLOCK_WIDTH;
-
-    _height = CHUNK_HEIGHT* BLOCK_HEIGHT;
-    _length = CHUNK_LENGTH * BLOCK_LENGTH;
-    _width = CHUNK_WIDTH * BLOCK_WIDTH;
-
     // Initialize the chunks
     for(int i = 0; i < RENDER_SIZE*RENDER_SIZE*RENDER_SIZE; i++)
         _nchunks.push_back(Chunk());
-    
 }
 
 ChunkManager::~ChunkManager()
