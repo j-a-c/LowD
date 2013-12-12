@@ -100,22 +100,22 @@ void Chunk::createMesh()
 
     glBegin(GL_QUADS);
                 // Don't render blocks not touching air (e.g. not visable)
-                if (x == 0 ? true : _blocks[toIndex(x-1,y,z)].getType() == BlockType_Air)
+                if (x == 0 ? true : _blocks[toBlockIndex(x-1,y,z)].getType() == BlockType_Air)
                     currentBlockToRender.createLeft();
 
-                if (x == CHUNK_WIDTH-1 ? true : _blocks[toIndex(x+1,y,z)].getType() == BlockType_Air)
+                if (x == CHUNK_WIDTH-1 ? true : _blocks[toBlockIndex(x+1,y,z)].getType() == BlockType_Air)
                     currentBlockToRender.createRight();
 
-                if (y == 0 ? true : _blocks[toIndex(x,y-1,z)].getType() == BlockType_Air)
+                if (y == 0 ? true : _blocks[toBlockIndex(x,y-1,z)].getType() == BlockType_Air)
                     currentBlockToRender.createBottom();
                 
-                if (y == CHUNK_HEIGHT-1 ? true : _blocks[toIndex(x,y+1,z)].getType() == BlockType_Air)
+                if (y == CHUNK_HEIGHT-1 ? true : _blocks[toBlockIndex(x,y+1,z)].getType() == BlockType_Air)
                     currentBlockToRender.createTop();
                 
-                if (z == 0 ? true : _blocks[toIndex(x,y,z-1)].getType() == BlockType_Air)
+                if (z == 0 ? true : _blocks[toBlockIndex(x,y,z-1)].getType() == BlockType_Air)
                     currentBlockToRender.createBack();
 
-                if (z == CHUNK_WIDTH-1 ? true : _blocks[toIndex(x,y,z+1)].getType() == BlockType_Air)
+                if (z == CHUNK_WIDTH-1 ? true : _blocks[toBlockIndex(x,y,z+1)].getType() == BlockType_Air)
                     currentBlockToRender.createFront();
                 
     glEnd();
@@ -176,12 +176,12 @@ void Chunk::generate(int xpos, int ypos, int zpos)
             // Height is located in chunk
             if (heightY == ypos)
                 for (int y = 0; y <= heightHere; y++)
-                    _blocks[toIndex(x,y,z)].setType(BlockType_Grass);
+                    _blocks[toBlockIndex(x,y,z)].setType(BlockType_Grass);
 
             // Height is above chunk
             else if (heightY > ypos)
                 for (int y = 0; y < CHUNK_HEIGHT; y++)
-                    _blocks[toIndex(x,y,z)].setType(BlockType_Grass);
+                    _blocks[toBlockIndex(x,y,z)].setType(BlockType_Grass);
         }
 }
 
@@ -198,7 +198,7 @@ void Chunk::render()
 
 bool Chunk::isActive(int x, int y, int z)
 {
-    bool ret = _blocks[toIndex(x,y,z)].getType() != BlockType_Air;
+    bool ret = _blocks[toBlockIndex(x,y,z)].getType() != BlockType_Air;
     return ret; 
 }
 

@@ -8,6 +8,7 @@
 #include <iostream>
 #include <math.h>
 #include <utility>
+#include <vector>
 
 
 /**
@@ -33,7 +34,7 @@ class ChunkManager
 
     private:
         //Chunks
-        Chunk**** _chunks;
+        std::vector<Chunk> _nchunks;
 
         // Current chunk
         // Player starts off in chunk 0, 0, 0 - before being moved due to
@@ -74,36 +75,14 @@ ChunkManager::ChunkManager()
     _width = CHUNK_WIDTH * BLOCK_WIDTH;
 
     // Initialize the chunks
-    _chunks = new Chunk***[RENDER_SIZE];
-    for (int x = 0; x < RENDER_SIZE; x++)
-    {
-        _chunks[x] = new Chunk**[RENDER_SIZE];
-
-        for (int y = 0; y < RENDER_SIZE; y++)
-        {
-            _chunks[x][y] = new Chunk*[RENDER_SIZE];
-            for (int z = 0; z < RENDER_SIZE; z++)
-                _chunks[x][y][z] = new Chunk();
-        }
-
-    }
-
+    for(int i = 0; i < RENDER_SIZE*RENDER_SIZE*RENDER_SIZE; i++)
+        _nchunks.push_back(Chunk());
+    
 }
 
 ChunkManager::~ChunkManager()
 {
-    // Delete the chunks
-    for (int x = 0; x < RENDER_SIZE; x++)
-    {
-        for (int y = 0; y < RENDER_SIZE; y++)
-        {
-            for (int z = 0; z < RENDER_SIZE; z++)
-                delete _chunks[x][y][z];
-            delete [] _chunks[x][y];
-        }
-        delete [] _chunks[x];
-    }
-    delete [] _chunks;
+
 }
 
 
@@ -116,8 +95,8 @@ void ChunkManager::initializeWorld()
         {
             for (int z = 0; z < RENDER_SIZE; z++)
             {
-                _chunks[x][y][z]->generate(x+_x-_offset,y+_y-_offset,z+_z-_offset);
-                _chunks[x][y][z]->createMesh();
+                _nchunks[toChunkIndex(x,y,z)].generate(x+_x-_offset,y+_y-_offset,z+_z-_offset);
+                _nchunks[toChunkIndex(x,y,z)].createMesh();
             }
         }
     }
@@ -144,7 +123,7 @@ void ChunkManager::render()
                         x*CHUNK_WIDTH*BLOCK_WIDTH - _renderOffsetX,
                         y*CHUNK_HEIGHT*BLOCK_HEIGHT - _renderOffsetY,
                         z*CHUNK_LENGTH*BLOCK_LENGTH - _renderOffsetZ);
-                _chunks[x][y][z]->render();
+                _nchunks[toChunkIndex(x,y,z)].render();
                 glPopMatrix();
             }
 }
@@ -217,8 +196,6 @@ Vector3D ChunkManager::update(Vector3D position)
         int zShiftStop = zShift <= 0 ? RENDER_SIZE : RENDER_SIZE - zShift;
 
         // Shift render cube
-        // In-place swap
-        Chunk* swap;
         for (int x = xShiftStart; x < xShiftStop; x++)
             for (int y = yShiftStart; y < yShiftStop; y++)
                 for (int z = zShiftStart; z < zShiftStop; z++)
@@ -230,7 +207,7 @@ Vector3D ChunkManager::update(Vector3D position)
                     //swap =  _chunks[x][y][z];
                     //_chunks[x][y][z] =  _chunks[xSwap][ySwap][zSwap];
                     //_chunks[xSwap][ySwap][zSwap] = swap;
-                    std::swap(_chunks[x][y][z], _chunks[xSwap][ySwap][zSwap]);
+                    std::swap(_nchunks[toChunkIndex(x,y,z)], _nchunks[toChunkIndex(xSwap,ySwap,zSwap)]);
                 }
 
         // TODO move into previous loop?
@@ -250,9 +227,9 @@ Vector3D ChunkManager::update(Vector3D position)
             for (int y = yGenStart; y < yGenStop; y++)
                 for (int z = zGenStart; z < zGenStop; z++)
                 {
-                    _chunks[x][y][z]->reset();
-                    _chunks[x][y][z]->generate(x+_x-_offset,y+_y-_offset,z+_z-_offset);
-                    _chunks[x][y][z]->createMesh();
+                    _nchunks[toChunkIndex(x,y,z)].reset();
+                    _nchunks[toChunkIndex(x,y,z)].generate(x+_x-_offset,y+_y-_offset,z+_z-_offset);
+                    _nchunks[toChunkIndex(x,y,z)].createMesh();
                 }
     }
 
@@ -286,7 +263,7 @@ bool ChunkManager::isActive(Vector3D position)
     while (distz >= CHUNK_LENGTH) distz -= CHUNK_LENGTH;
     while (distz < 0) distz += CHUNK_LENGTH;
 
-    bool ret = _chunks[_offset+offsetx][_offset+offsety][_offset+offsetz]->isActive(distx, disty, distz);
+    bool ret = _nchunks[toChunkIndex(_offset+offsetx,_offset+offsety,_offset+offsetz)].isActive(distx, disty, distz);
 
     return ret; 
 }
