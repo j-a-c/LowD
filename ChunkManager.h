@@ -73,8 +73,6 @@ ChunkManager::ChunkManager()
     _length = CHUNK_LENGTH * BLOCK_LENGTH;
     _width = CHUNK_WIDTH * BLOCK_WIDTH;
 
-    std::cout << "\tEntering ChunkManager()" << std::endl;
-
     // Initialize the chunks
     _chunks = new Chunk***[RENDER_SIZE];
     for (int x = 0; x < RENDER_SIZE; x++)
@@ -89,8 +87,6 @@ ChunkManager::ChunkManager()
         }
 
     }
-
-    std::cout << "\tExiting ChunkManager()" << std::endl;
 
 }
 
@@ -114,24 +110,17 @@ ChunkManager::~ChunkManager()
 // TODO
 void ChunkManager::initializeWorld()
 {
-    std::cout << "\tEnter ChunkManager.initializeWorld()" << std::endl;
-
-
     for (int x = 0; x < RENDER_SIZE; x++)
     {
         for (int y = 0; y < RENDER_SIZE; y++)
         {
             for (int z = 0; z < RENDER_SIZE; z++)
             {
-                std::cout << "Initing: " << x+_x-_offset << "," << y+_y-_offset << "," << z+_z-_offset << std::endl;
-
                 _chunks[x][y][z]->generate(x+_x-_offset,y+_y-_offset,z+_z-_offset);
                 _chunks[x][y][z]->createMesh();
             }
         }
     }
-
-    std::cout << "\tExiting ChunkManager.initializeWorld()" << std::endl;
 }
 
 /**
@@ -139,8 +128,6 @@ void ChunkManager::initializeWorld()
  */
 void ChunkManager::render()
 {
-    std::cout << "\tEntering ChunkManager.render()" << std::endl;
-
     // TODO render spherically from center outwards
     // render visible
     for (int x = 0; x < RENDER_SIZE; x++)
@@ -160,8 +147,6 @@ void ChunkManager::render()
                 _chunks[x][y][z]->render();
                 glPopMatrix();
             }
-
-    std::cout << "\tExiting ChunkManager.render()" << std::endl;
 }
 /**
  * Updates the ChunkManager given the player's interpolated position.
@@ -170,9 +155,6 @@ void ChunkManager::render()
  */
 Vector3D ChunkManager::update(Vector3D position)
 {
-    std::cout << "\tEntering ChunkManager.update()" << std::endl;
-    std::cout << "\tOld coords: " << position.x << " " << position.y << " " << position.z << std::endl;
-
     // Original position
     float distx = position.x;
     float disty = position.y;
@@ -224,8 +206,6 @@ Vector3D ChunkManager::update(Vector3D position)
     // Has player left the center of render cube?
     if (xShift!= 0 || zShift!= 0 || yShift!= 0)
     {
-        std::cout << "\tShift: " << xShift << " " << yShift << " " << zShift << std::endl;
-
         // Calculate in-place swap limits
         int xShiftStart = xShift >= 0 ? 0 : -xShift;
         int xShiftStop = xShift <= 0 ? RENDER_SIZE : RENDER_SIZE - xShift;
@@ -246,9 +226,6 @@ Vector3D ChunkManager::update(Vector3D position)
                     int xSwap = xShift == 0 ? x : xShift > 0 ? x+xShift : x % (-xShift);
                     int ySwap = yShift == 0 ? y : yShift > 0 ? y+yShift : y % (-yShift);
                     int zSwap = zShift == 0 ? z : zShift > 0 ? z+zShift : x % (-zShift);
-
-                    std::cout << "\tSwapping " << x << "," << y << "," << z
-                        << " with " << xSwap << "," << ySwap << "," << zSwap << std::endl; 
 
                     //swap =  _chunks[x][y][z];
                     //_chunks[x][y][z] =  _chunks[xSwap][ySwap][zSwap];
@@ -273,9 +250,6 @@ Vector3D ChunkManager::update(Vector3D position)
             for (int y = yGenStart; y < yGenStop; y++)
                 for (int z = zGenStart; z < zGenStop; z++)
                 {
-                    std::cout << "\tGenerating " 
-                        << x+_x-_offset << "," << y+_y-_offset << "," << z+_z-_offset
-                        << " at " << x << "," << y << "," << z << std::endl; 
                     _chunks[x][y][z]->reset();
                     _chunks[x][y][z]->generate(x+_x-_offset,y+_y-_offset,z+_z-_offset);
                     _chunks[x][y][z]->createMesh();
@@ -283,10 +257,6 @@ Vector3D ChunkManager::update(Vector3D position)
     }
 
     Vector3D newPosition(distx, disty, distz);
-
-    std::cout << "\tRender coords " << _x << " " << _y << " " << _z << std::endl;
-    std::cout << "\tNew coords" << distx << " " << disty << " " << distz << std::endl;
-    std::cout << "\tExiting ChunkManager.update()" << std::endl;
 
     return newPosition;
 }
@@ -296,8 +266,6 @@ Vector3D ChunkManager::update(Vector3D position)
  */
 bool ChunkManager::isActive(Vector3D position)
 {
-    std::cout << "\tEntering ChunkManager.isActive()" << std::endl;
-
     // Offsets from the center Chunk
     // Block # / CHUNK_SIZE = Chunk offset
     int offsetx = int(position.x / BLOCK_WIDTH) / CHUNK_WIDTH; 
@@ -318,18 +286,7 @@ bool ChunkManager::isActive(Vector3D position)
     while (distz >= CHUNK_LENGTH) distz -= CHUNK_LENGTH;
     while (distz < 0) distz += CHUNK_LENGTH;
 
-    std::cout << "\tOffsets: " 
-        << offsetx << " " << offsety << " " << offsetz << std::endl;
-    std::cout << "\tChunk: " 
-        << _offset+offsetx << " " << _offset+offsety << " "
-        << _offset+offsetz << std::endl;
-    std::cout << "\tCoord: " 
-        << distx << " " << disty << " "
-        << distz << std::endl;
-
     bool ret = _chunks[_offset+offsetx][_offset+offsety][_offset+offsetz]->isActive(distx, disty, distz);
-
-    std::cout << "\tExiting ChunkManager.isActive()" << std::endl;
 
     return ret; 
 }

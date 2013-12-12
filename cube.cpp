@@ -1,18 +1,11 @@
 #include <GL/glew.h>
 #include <GL/glfw.h>
 #include <math.h>
-#include <stdlib.h>
-#include <stdio.h>
 #include <vector>
-
-//TODO delete after debug
-#include <iostream>
-#include "Simplex.h"
 
 #include "Player.h"
 #include "ChunkManager.h"
 #include "Shader.h"
-#include "datastructures/Vector3D.h"
 
 #define _maxspeed 6
 #define _gravity 20.0
@@ -303,7 +296,6 @@ Vector3D interpolate(double delta)
     // JUMP
     if (glfwGetKey(GLFW_KEY_SPACE) == GLFW_PRESS && !player.isFalling())
     {
-        std::cout << "~JUMPING!!";
         player.setFalling(true);
         yvel += _jumpSpeed;
     }
@@ -319,8 +311,6 @@ Vector3D interpolate(double delta)
  */
 Vector3D collide(Vector3D position, double delta)
 {
-    std::cout << "Entering collide" << std::endl;
-
     // Padding = 1/4 * BLOCK_HEIGHT
     float padding = 0.25 * BLOCK_HEIGHT;
 
@@ -357,8 +347,6 @@ Vector3D collide(Vector3D position, double delta)
                 op.y -= dy*BLOCK_HEIGHT;
                 op[dim] += face[dim];
 
-                std::cout << "Active? " << op.x << "," << op.y << "," << op.z << std::endl;
-
                 // Is this block active?
                 if (!chunkManager.isActive(op))
                     continue;
@@ -377,8 +365,6 @@ Vector3D collide(Vector3D position, double delta)
         //yvel -= delta * _gravity; 
         //yvel = yvel > -_terminalVelocity? -_terminalVelocity: yvel;
     }
-
-    std::cout << "Exiting collide" << std::endl;
 
     return position;
 
@@ -408,9 +394,6 @@ void render()
     // Translate away from player 
     Vector3D position = player.getPosition();
     glTranslated(-position.x, -position.y, -position.z);
-
-    std::cout << "Player: " << position.x << " " << position.y <<
-        " " << position.z << std::endl;
 
     shader.begin();
 
