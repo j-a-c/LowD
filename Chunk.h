@@ -98,7 +98,7 @@ void Chunk::createMesh()
 
  // index = (x * height + y) * depth + z 
 
-    glBegin(GL_QUADS);
+    glBegin(GL_TRIANGLES);
                 // Don't render blocks not touching air (e.g. not visable)
                 if (x == 0 ? true : _blocks[toBlockIndex(x-1,y,z)].getType() == BlockType_Air)
                     currentBlockToRender.createLeft();

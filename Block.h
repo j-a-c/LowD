@@ -131,8 +131,12 @@ void Block::createFront()
     glNormal3f(0.0f, 0.0f, 1.0f);
     glVertex3f(0.0f+width, 0.0f-height, 0.0f+length); //BR
     glVertex3f(0.0f+width, 0.0f+height, 0.0f+length); //TR
+    glVertex3f(0.0f-width, 0.0f-height, 0.0f+length); // BL
+
     glVertex3f(0.0f-width, 0.0f+height, 0.0f+length); // TL
     glVertex3f(0.0f-width, 0.0f-height, 0.0f+length); // BL
+    glVertex3f(0.0f+width, 0.0f+height, 0.0f+length); //TR
+
 
     //glEnd();
 }
@@ -155,8 +159,11 @@ void Block::createBack()
     glNormal3f(0.0f, 0.0f, -1.0f);
     glVertex3f(0.0f+width, 0.0f-height, 0.0f-length); // BR
     glVertex3f(0.0f+width, 0.0f+height, 0.0f-length); //TR
+    glVertex3f(0.0f-width, 0.0f-height, 0.0f-length); // BL
+
     glVertex3f(0.0f-width, 0.0f+height, 0.0f-length); // TL
     glVertex3f(0.0f-width, 0.0f-height, 0.0f-length); // BL
+    glVertex3f(0.0f+width, 0.0f+height, 0.0f-length); //TR
 
     //glEnd();
 }
@@ -179,8 +186,11 @@ void Block::createLeft()
     glNormal3f(-1.0f, 0.0f, 0.0f);
     glVertex3f(0.0f-width, 0.0f-height, 0.0f+length); //FB
     glVertex3f(0.0f-width, 0.0f+height, 0.0f+length); //FT
+    glVertex3f(0.0f-width, 0.0f-height, 0.0f-length); //BB
+
     glVertex3f(0.0f-width, 0.0f+height, 0.0f-length); //BT
     glVertex3f(0.0f-width, 0.0f-height, 0.0f-length); //BB
+    glVertex3f(0.0f-width, 0.0f+height, 0.0f+length); //FT
 
     //glEnd();
 }
@@ -204,7 +214,10 @@ void Block::createRight()
     glVertex3f(0.0f+width, 0.0f-height, 0.0f-length); // BB
     glVertex3f(0.0f+width, 0.0f-height, 0.0f+length); // BT
     glVertex3f(0.0f+width, 0.0f+height, 0.0f+length); // FT
+
+    glVertex3f(0.0f+width, 0.0f+height, 0.0f+length); // FT
     glVertex3f(0.0f+width, 0.0f+height, 0.0f-length); // FB
+    glVertex3f(0.0f+width, 0.0f-height, 0.0f-length); // BB
 
     //glEnd();
 }
@@ -228,7 +241,10 @@ void Block::createTop()
     glVertex3f(0.0f-width, 0.0f+height, 0.0f+length); // FL
     glVertex3f(0.0f+width, 0.0f+height, 0.0f+length); // FR
     glVertex3f(0.0f+width, 0.0f+height, 0.0f-length); //BR
+
+    glVertex3f(0.0f+width, 0.0f+height, 0.0f-length); //BR
     glVertex3f(0.0f-width, 0.0f+height, 0.0f-length); // BL
+    glVertex3f(0.0f-width, 0.0f+height, 0.0f+length); // FL
 
     //glEnd();
 }
@@ -251,8 +267,12 @@ void Block::createBottom()
     glNormal3f(0.0f, -1.0f, 0.0f);
     glVertex3f(0.0f-width, 0.0f-height, 0.0f-length); // BL
     glVertex3f(0.0f+width, 0.0f-height, 0.0f-length); // BR
+    glVertex3f(0.0f-width, 0.0f-height, 0.0f+length); // FL
+
+
     glVertex3f(0.0f+width, 0.0f-height, 0.0f+length); // FR
     glVertex3f(0.0f-width, 0.0f-height, 0.0f+length); // FL
+    glVertex3f(0.0f+width, 0.0f-height, 0.0f-length); // BR
 
     //glEnd();
 }
