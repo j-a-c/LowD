@@ -10,7 +10,7 @@
 #define _maxspeed 6
 #define _gravity 20.0
 #define _maxJumpHeight  1.0
-#define  _terminalVelocity  50
+#define _terminalVelocity  50
 
 
 void init(void);
@@ -92,6 +92,7 @@ void init()
 	glewInit();
 	if (!glewIsSupported("GL_VERSION_2_0"))
 		exit(1);
+    printf("OpenGL version supported by this platform : %s\n", glGetString(GL_VERSION));
 
     glViewport(0, 0, (GLsizei)desktop.Width, (GLsizei)desktop.Height);
     glMatrixMode(GL_PROJECTION);
