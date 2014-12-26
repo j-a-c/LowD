@@ -108,37 +108,37 @@ void Chunk::createMesh()
                 // Don't render blocks not touching air (e.g. not visable)
                 if (x == 0 ? true : _blocks[toBlockIndex(x-1,y,z)].getType() == BlockType_Air)
                 {
-                    _numberOfTriangles++;
+                    _numberOfTriangles += 2;
                     currentBlockToRender.createLeft();
                 }
 
                 if (x == CHUNK_WIDTH-1 ? true : _blocks[toBlockIndex(x+1,y,z)].getType() == BlockType_Air)
                 {
-                    _numberOfTriangles++;
+                    _numberOfTriangles += 2;
                     currentBlockToRender.createRight();
                 }
 
                 if (y == 0 ? true : _blocks[toBlockIndex(x,y-1,z)].getType() == BlockType_Air)
                 {
-                    _numberOfTriangles++;
+                    _numberOfTriangles += 2;
                     currentBlockToRender.createBottom();
                 }
                 
                 if (y == CHUNK_HEIGHT-1 ? true : _blocks[toBlockIndex(x,y+1,z)].getType() == BlockType_Air)
                 {
-                    _numberOfTriangles++;
+                    _numberOfTriangles += 2;
                     currentBlockToRender.createTop();
                 }
                 
                 if (z == 0 ? true : _blocks[toBlockIndex(x,y,z-1)].getType() == BlockType_Air)
                 {
-                    _numberOfTriangles++;
+                    _numberOfTriangles += 2;
                     currentBlockToRender.createBack();
                 }
 
                 if (z == CHUNK_WIDTH-1 ? true : _blocks[toBlockIndex(x,y,z+1)].getType() == BlockType_Air)
                 {
-                    _numberOfTriangles++;
+                    _numberOfTriangles += 2;
                     currentBlockToRender.createFront();
                 }
                 
