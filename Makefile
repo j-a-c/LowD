@@ -1,3 +1,5 @@
+.PHONY: cube
+
 cube: 
 	g++ cube.cpp -O2 -std=c++11 -lGLU -lGLEW -lglfw -o cube
 #	Optimization and gprof
