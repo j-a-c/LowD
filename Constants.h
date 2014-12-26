@@ -23,8 +23,8 @@ const bool DEBUG  = true;
 // Player attributes
 #define PLAYER_TOP_DIST 0.25
 #define PLAYER_BOT_DIST 0.75
-#define PLAYER_HALF_WIDTH = 0.5
-#define PLAYER_HALF_LENGTH = 0.5
+#define PLAYER_HALF_WIDTH 0.5
+#define PLAYER_HALF_LENGTH 0.5
 
 
 int toChunkIndex(int x, int y, int z)
