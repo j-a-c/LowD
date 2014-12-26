@@ -27,12 +27,16 @@ class Chunk
         void render();
 
         bool isActive(int x, int y, int z);
+        
+        int getNumberOfTriangles();
 
     private:
         // Display list for this chunk
         GLuint _theChunk;
         // Data for blocks in this chuck
         std::vector<Block> _blocks;
+        // The number of renderable triangles in this chunk.
+        int _numberOfTriangles = 0;
 
 };
 
@@ -69,6 +73,8 @@ void Chunk::createMesh()
     glNewList(_theChunk, GL_COMPILE);
 
     Block currentBlockToRender;
+
+    _numberOfTriangles = 0;
     
     const int heightLength = CHUNK_HEIGHT * CHUNK_LENGTH;
     for (int x = 0; x < CHUNK_WIDTH; ++x)
@@ -101,22 +107,40 @@ void Chunk::createMesh()
     glBegin(GL_TRIANGLES);
                 // Don't render blocks not touching air (e.g. not visable)
                 if (x == 0 ? true : _blocks[toBlockIndex(x-1,y,z)].getType() == BlockType_Air)
+                {
+                    _numberOfTriangles++;
                     currentBlockToRender.createLeft();
+                }
 
                 if (x == CHUNK_WIDTH-1 ? true : _blocks[toBlockIndex(x+1,y,z)].getType() == BlockType_Air)
+                {
+                    _numberOfTriangles++;
                     currentBlockToRender.createRight();
+                }
 
                 if (y == 0 ? true : _blocks[toBlockIndex(x,y-1,z)].getType() == BlockType_Air)
+                {
+                    _numberOfTriangles++;
                     currentBlockToRender.createBottom();
+                }
                 
                 if (y == CHUNK_HEIGHT-1 ? true : _blocks[toBlockIndex(x,y+1,z)].getType() == BlockType_Air)
+                {
+                    _numberOfTriangles++;
                     currentBlockToRender.createTop();
+                }
                 
                 if (z == 0 ? true : _blocks[toBlockIndex(x,y,z-1)].getType() == BlockType_Air)
+                {
+                    _numberOfTriangles++;
                     currentBlockToRender.createBack();
+                }
 
                 if (z == CHUNK_WIDTH-1 ? true : _blocks[toBlockIndex(x,y,z+1)].getType() == BlockType_Air)
+                {
+                    _numberOfTriangles++;
                     currentBlockToRender.createFront();
+                }
                 
     glEnd();
                 //glTranslatef(-translateDistX, -translateDistY, -translateDistZ);
@@ -151,6 +175,7 @@ void Chunk::generate(int xpos, int ypos, int zpos)
 
     // Set height
     for (int x = 0; x < CHUNK_WIDTH; x++)
+    {
         for (int z = 0; z < CHUNK_LENGTH; z++)
         {
             // Height at this spot
@@ -183,6 +208,7 @@ void Chunk::generate(int xpos, int ypos, int zpos)
                 for (int y = 0; y < CHUNK_HEIGHT; y++)
                     _blocks[toBlockIndex(x,y,z)].setType(BlockType_Grass);
         }
+    }
 }
 
 
@@ -200,6 +226,11 @@ bool Chunk::isActive(int x, int y, int z)
 {
     bool ret = _blocks[toBlockIndex(x,y,z)].getType() != BlockType_Air;
     return ret; 
+}
+
+int Chunk::getNumberOfTriangles() 
+{
+    return _numberOfTriangles; 
 }
 
 #endif

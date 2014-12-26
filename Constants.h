@@ -1,6 +1,9 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
+// Enable debug messages.
+const bool DEBUG  = true;
+
 // Any number
 // Length, Width, Height of a Block
 #define BLOCK_HEIGHT 1.0

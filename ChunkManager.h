@@ -57,6 +57,9 @@ class ChunkManager
         const int _length = CHUNK_LENGTH * BLOCK_LENGTH;
         const int _width = CHUNK_WIDTH * BLOCK_WIDTH;
 
+        // Number of triangles currently rendered.
+        int _numberOfTrianglesRendered = 0;
+
 
 };
 
@@ -94,10 +97,14 @@ void ChunkManager::initializeWorld()
  */
 void ChunkManager::render()
 {
+    int numTrianglesJustRendered = 0;
+
     // TODO render spherically from center outwards
     // render visible
     for (int x = 0; x < RENDER_SIZE; x++)
+    {
         for (int y = 0; y < RENDER_SIZE; y++)
+        {
             for (int z = 0; z < RENDER_SIZE; z++)
             {
                 glPushMatrix();
@@ -111,8 +118,22 @@ void ChunkManager::render()
                         y*CHUNK_HEIGHT*BLOCK_HEIGHT - _renderOffsetY,
                         z*CHUNK_LENGTH*BLOCK_LENGTH - _renderOffsetZ);
                 _nchunks[toChunkIndex(x,y,z)].render();
+
+                if (DEBUG)
+                {
+                    numTrianglesJustRendered += _nchunks[toChunkIndex(x,y,z)].getNumberOfTriangles();
+                }
+                
                 glPopMatrix();
             }
+        }
+    }
+
+    if (DEBUG && (numTrianglesJustRendered != _numberOfTrianglesRendered))
+    {
+        _numberOfTrianglesRendered = numTrianglesJustRendered;
+        std::cout << "Number of triangles rendered: " << _numberOfTrianglesRendered << std::endl; 
+    }
 }
 /**
  * Updates the ChunkManager given the player's interpolated position.
