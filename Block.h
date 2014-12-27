@@ -32,6 +32,7 @@ class Block
         // Increase width/height of faces using the specified multiplier.
         void createFront(int, int);
         void createBack(int, int);
+        void createLeft(int, int);
         void createTop(int, int);
         void createBottom(int, int);
 
@@ -111,17 +112,27 @@ void Block::createBack(int heightMultiplier, int widthMultiplier)
 
 void Block::createLeft()
 {
-    glColor3f(0.0, 1.0, 0.0);
+    createLeft(1, 1);
+}
+
+void Block::createLeft(int heightMultiplier, int lengthMultiplier)
+{
+    // Decrement so we don't count this block when drawing the extensions.
+    heightMultiplier -= 1;
+    lengthMultiplier -= 1;
+
+    glColor3f(1.0, 1.0, 0.0);
 
     // Left
     glNormal3f(-1.0f, 0.0f, 0.0f);
-    glVertex3f(0.0f-width, 0.0f-height, 0.0f+length); //FB
-    glVertex3f(0.0f-width, 0.0f+height, 0.0f+length); //FT
+    glVertex3f(0.0f-width, 0.0f-height, 0.0f+length + lengthMultiplier*BLOCK_LENGTH); //FB
+    glVertex3f(0.0f-width, 0.0f+height + heightMultiplier*BLOCK_HEIGHT, 0.0f+length + lengthMultiplier*BLOCK_LENGTH); //FT
     glVertex3f(0.0f-width, 0.0f-height, 0.0f-length); //BB
 
-    glVertex3f(0.0f-width, 0.0f+height, 0.0f-length); //BT
+    glVertex3f(0.0f-width, 0.0f+height + heightMultiplier*BLOCK_HEIGHT, 0.0f-length); //BT
     glVertex3f(0.0f-width, 0.0f-height, 0.0f-length); //BB
-    glVertex3f(0.0f-width, 0.0f+height, 0.0f+length); //FT
+    glVertex3f(0.0f-width, 0.0f+height + heightMultiplier*BLOCK_HEIGHT, 0.0f+length + lengthMultiplier*BLOCK_LENGTH); //FT
+
 }
 
 void Block::createRight()
