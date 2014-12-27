@@ -85,6 +85,11 @@ void Block::createFront(int heightMultiplier, int widthMultiplier)
 
 void Block::createBack()
 {
+    createBack(1, 1);
+}
+
+void Block::createBack(int heightMultiplier, int widthMultiplier)
+{
     glColor3f(0.0, 1.0, 0.0);
 
     // Back
@@ -96,10 +101,6 @@ void Block::createBack()
     glVertex3f(0.0f-width, 0.0f+height, 0.0f-length); // TL
     glVertex3f(0.0f-width, 0.0f-height, 0.0f-length); // BL
     glVertex3f(0.0f+width, 0.0f+height, 0.0f-length); //TR
-}
-
-void Block::createBack(int heightMultiplier, int widthMultiplier)
-{
 
 }
 

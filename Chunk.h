@@ -179,8 +179,61 @@ void Chunk::createMesh()
                         case BACK:
                             if (z == 0 ? true : _blocks[toBlockIndex(x,y,z-1)].getType() == BlockType_Air)
                             {
+                                currentBlockToRender.createBack(1,1);
+                                break;
+                                int nextXSameY = x;
+                                while (nextXSameY + 1 < CHUNK_LENGTH &&
+                                    !rendered[toBlockIndex(nextXSameY+1,y,z)] &&
+                                    _blocks[toBlockIndex(nextXSameY+1,y,z-1)].getType() == BlockType_Air &&
+                                    _blocks[toBlockIndex(nextXSameY+1,y,z)].getType() == currentBlockToRender.getType()
+                                    )
+                                {
+                                    nextXSameY++;
+                                }
+
+                                int minX = nextXSameY;
+                                int finalX = nextXSameY;
+                                int finalY = y;
+
+                                int nextY = y;
+                                while(nextY + 1 < CHUNK_HEIGHT &&
+                                     !rendered[toBlockIndex(x,nextY+1,z)] &&
+                                     _blocks[toBlockIndex(x, nextY+1,z-1)].getType() == BlockType_Air &&
+                                     _blocks[toBlockIndex(x, nextY+1, z)].getType() == currentBlockToRender.getType() 
+                                    )
+                                {
+                                    nextXSameY = x;
+                                    while(nextXSameY + 1 < minX &&
+                                        !rendered[toBlockIndex(nextXSameY+1,nextY+1,z)] &&
+                                        _blocks[toBlockIndex(nextXSameY+1,nextY+1,z-1)].getType() == BlockType_Air &&
+                                        _blocks[toBlockIndex(nextXSameY+1,nextY+1,z)].getType() == currentBlockToRender.getType()
+                                        )
+                                    {
+                                        nextXSameY++;
+                                    }
+
+                                    // Track the min width
+                                    if (nextXSameY < minX)
+                                        minX = nextXSameY;
+
+                                    // If we can merge more triangles, update values.
+                                    if ( ((finalX - x)*(finalY-y)) < (nextXSameY-x)*(nextY-y) )
+                                    {
+                                        finalX = nextXSameY;
+                                        finalY = nextY;
+                                    }
+
+                                    nextY++;
+                                }
+
+                                // Mark rendered faces.
+                                for (int rx = x; rx <= finalX; rx++)
+                                    for (int ry = y; ry <= finalY; ry++)
+                                        rendered[toBlockIndex(rx, ry, z)] = true;
+
                                 _numberOfTriangles += 2;
-                                currentBlockToRender.createBack(1, 1);
+                                currentBlockToRender.createBack(finalY - y + 1, finalX-x+1);
+
                             }
                             break;
                         case LEFT:

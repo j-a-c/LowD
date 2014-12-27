@@ -240,10 +240,24 @@ void update(double delta)
 void lookAround()
 {
     // Mouse
-    int mouseX, mouseY;
-    glfwGetMousePos(&mouseX, &mouseY);
-    player.offsetOrientation(mouseX * _mouseSensitivity, mouseY * _mouseSensitivity);
-    glfwSetMousePos(0,0);
+    //int mouseX, mouseY;
+    //glfwGetMousePos(&mouseX, &mouseY);
+    //player.offsetOrientation(mouseX * _mouseSensitivity, mouseY * _mouseSensitivity);
+    //glfwSetMousePos(0,0);
+    
+    float offX = 0;
+    float offY = 0;
+
+    if (glfwGetKey(GLFW_KEY_UP) == GLFW_PRESS)
+        offY -= 1.5;
+    if (glfwGetKey(GLFW_KEY_DOWN) == GLFW_PRESS)
+        offY += 1.5;
+    if (glfwGetKey(GLFW_KEY_LEFT) == GLFW_PRESS)
+        offX -= 1.5;
+    if (glfwGetKey(GLFW_KEY_RIGHT) == GLFW_PRESS)
+        offX += 1.5;
+
+    player.offsetOrientation(offX, offY);
 }
 
 /**
