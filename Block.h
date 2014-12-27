@@ -102,12 +102,12 @@ void Block::createBack(int heightMultiplier, int widthMultiplier)
     // Back
     glNormal3f(0.0f, 0.0f, -1.0f);
     glVertex3f(0.0f+width + widthMultiplier*BLOCK_WIDTH, 0.0f-height, 0.0f-length); // BR
-    glVertex3f(0.0f+width + widthMultiplier*BLOCK_WIDTH, 0.0f+height, 0.0f-length); //TR
+    glVertex3f(0.0f+width + widthMultiplier*BLOCK_WIDTH, 0.0f+height + heightMultiplier*BLOCK_HEIGHT, 0.0f-length); //TR
     glVertex3f(0.0f-width, 0.0f-height, 0.0f-length); // BL
 
-    glVertex3f(0.0f-width, 0.0f+height, 0.0f-length); // TL
+    glVertex3f(0.0f-width, 0.0f+height + heightMultiplier*BLOCK_HEIGHT, 0.0f-length); // TL
     glVertex3f(0.0f-width, 0.0f-height, 0.0f-length); // BL
-    glVertex3f(0.0f+width + widthMultiplier*BLOCK_WIDTH, 0.0f+height, 0.0f-length); //TR
+    glVertex3f(0.0f+width + widthMultiplier*BLOCK_WIDTH, 0.0f+height + heightMultiplier*BLOCK_HEIGHT, 0.0f-length); //TR
 }
 
 void Block::createLeft()
