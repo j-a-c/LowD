@@ -26,8 +26,6 @@ void lookAround(void);
 Vector3D interpolate(double);
 Vector3D collide(Vector3D, double);
 
-void drawCharacter(void);
-
 int OK = 0;
 int ERROR = 1;
 
@@ -42,6 +40,9 @@ int cameraRadius = 10.0f;
 
 // Sensitivity
 float _mouseSensitivity = 0.1;
+
+/* Axes display list */
+static GLuint axes_list;
 
 Player player;
 ChunkManager chunkManager;
@@ -66,6 +67,57 @@ int main(int argc, char** argv)
     gameloop();
 
     shutdown(OK);
+}
+
+void initDebugInfo()
+{
+    if (DEBUG) 
+    {
+        /* Create a display list for drawing axes */
+        axes_list = glGenLists(1);
+        glNewList(axes_list, GL_COMPILE);
+     
+        glColor4ub(255, 0, 0, 255);
+        glBegin(GL_LINE_STRIP);
+        glVertex3f(0.0f, 0.0f, 0.0f);
+        glVertex3f(1.0f, 0.0f, 0.0f);
+        glVertex3f(0.75f, 0.25f, 0.0f);
+        glVertex3f(0.75f, -0.25f, 0.0f);
+        glVertex3f(1.0f, 0.0f, 0.0f);
+        glVertex3f(0.75f, 0.0f, 0.25f);
+        glVertex3f(0.75f, 0.0f, -0.25f);
+        glVertex3f(1.0f, 0.0f, 0.0f);
+        glEnd();
+
+        glColor4ub(0, 255, 0, 255);
+        glBegin(GL_LINE_STRIP);
+        glVertex3f(0.0f, 0.0f, 0.0f);
+        glVertex3f(0.0f, 1.0f, 0.0f);
+        glVertex3f(0.0f, 0.75f, 0.25f);
+        glVertex3f(0.0f, 0.75f, -0.25f);
+        glVertex3f(0.0f, 1.0f, 0.0f);
+        glVertex3f(0.25f, 0.75f, 0.0f);
+        glVertex3f(-0.25f, 0.75f, 0.0f);
+        glVertex3f(0.0f, 1.0f, 0.0f);
+        glEnd();
+
+        glColor4ub(0, 0, 255, 255);
+        glBegin(GL_LINE_STRIP);
+        glVertex3f(0.0f, 0.0f, 0.0f);
+        glVertex3f(0.0f, 0.0f, 1.0f);
+        glVertex3f(0.25f, 0.0f, 0.75f);
+        glVertex3f(-0.25f, 0.0f, 0.75f);
+        glVertex3f(0.0f, 0.0f, 1.0f);
+        glVertex3f(0.0f, 0.25f, 0.75f);
+        glVertex3f(0.0f, -0.25f, 0.75f);
+        glVertex3f(0.0f, 0.0f, 1.0f);
+        glEnd();
+     
+        glColor4ub(255, 255, 0, 255);
+        glRasterPos3f(1.1f, 0.0f, 0.0f);
+     
+        glEndList();
+    }
 }
 
 /**
@@ -100,6 +152,9 @@ void init()
     // Set the perspective (angle of sight, perspective, depth)
     gluPerspective(60, (GLfloat)desktop.Width/ (GLfloat)desktop.Height, 0.1, 100.0); 
     glMatrixMode(GL_MODELVIEW);
+
+    // Initialize debug info
+    initDebugInfo();
 
     // Initialize world
     chunkManager.initializeWorld();
@@ -385,6 +440,23 @@ Vector3D collide(Vector3D position, double delta)
 
 }
 
+void drawCharacter()
+{
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    //glutSolidCube(1);
+}
+
+void drawDebugInfo()
+{
+    if (DEBUG)
+    {
+        glPushMatrix();
+        glCallList(axes_list);
+        glPopMatrix();
+    }
+}
+
 /**
  * Rendering function
  */
@@ -406,6 +478,9 @@ void render()
     // Horizontal rotation
     glRotatef(player.side(), 0.0, 1.0, 0.0);
 
+    // Draw debug info
+    drawDebugInfo();
+
     // Translate away from player 
     Vector3D position = player.getPosition();
     glTranslated(-position.x, -position.y, -position.z);
@@ -422,11 +497,4 @@ void render()
 
     // Swap back and front buffers
     glfwSwapBuffers();
-}
-
-void drawCharacter()
-{
-    glColor3f(1.0f, 0.0f, 0.0f);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    //glutSolidCube(1);
 }
