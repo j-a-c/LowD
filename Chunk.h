@@ -278,7 +278,7 @@ void Chunk::createMesh()
                                      _blocks[toBlockIndex(nextX+1,y,z)].getType() == currentBlockToRender.getType() 
                                     )
                                 {
-                                    nextZSameX = x;
+                                    nextZSameX = z;
                                     while(nextZSameX + 1 < minZ &&
                                         !rendered[toBlockIndex(x,y,nextZSameX+1)] &&
                                         (y == CHUNK_HEIGHT-1 || _blocks[toBlockIndex(x,y+1,nextZSameX+1)].getType() == BlockType_Air) &&
