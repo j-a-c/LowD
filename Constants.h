@@ -27,6 +27,22 @@ const bool DEBUG  = true;
 #define PLAYER_HALF_LENGTH 0.5
 
 
+// Face enum
+enum Face
+{
+	FRONT = 0,
+    BACK,
+    LEFT,
+    RIGHT,
+    TOP,
+    BOTTOM,
+
+    NUM_FACES,
+};
+
+// For face-based loops
+const Face FACES[] = {FRONT, BACK, LEFT, RIGHT, TOP, BOTTOM};
+
 int toChunkIndex(int x, int y, int z)
 {
     // index = (x * height + y) * depth + z 

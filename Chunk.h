@@ -77,79 +77,100 @@ void Chunk::createMesh()
     _numberOfTriangles = 0;
     
     const int heightLength = CHUNK_HEIGHT * CHUNK_LENGTH;
-    for (int x = 0; x < CHUNK_WIDTH; ++x)
+
+    // Face merge algorithm.
+    // 0 - front, 1 - back, 2 - left, 3 - right, 4 - top, 5 - bottom
+    for (auto& face : FACES)
     {
-        const int ipart = x * heightLength;
-        for (int y = 0; y < CHUNK_HEIGHT; ++y)
+        // Set to 1 once if we have rendered this face.
+        int rendered [CHUNK_WIDTH * CHUNK_HEIGHT * CHUNK_LENGTH] = {};
+
+        for (int x = 0; x < CHUNK_WIDTH; ++x) 
         {
-            const long ijpart = ipart + y * CHUNK_LENGTH;
-            for (int z = 0; z < CHUNK_LENGTH; ++z)
+            const int ipart = x * heightLength;
+            for (int y = 0; y < CHUNK_HEIGHT; ++y)
             {
-                currentBlockToRender = _blocks[ijpart+z];
-                //currentBlockToRender = _blocks[x][y][z];
-
-                // Don't render inactive blocks (Air)
-                if(currentBlockToRender.getType() == BlockType_Air)
-                    continue;
-
-                // TODO skip hidden blocks
-
-                glPushMatrix();
-
-                float translateDistX = x * BLOCK_WIDTH;
-                float translateDistY = y * BLOCK_HEIGHT;
-                float translateDistZ = z * BLOCK_LENGTH;
-
-                glTranslatef(translateDistX, translateDistY, translateDistZ);
-
- // index = (x * height + y) * depth + z 
-
-    glBegin(GL_TRIANGLES);
-                // Don't render blocks not touching air (e.g. not visable)
-                if (x == 0 ? true : _blocks[toBlockIndex(x-1,y,z)].getType() == BlockType_Air)
+                const long ijpart = ipart + y * CHUNK_LENGTH;
+                for (int z = 0; z < CHUNK_LENGTH; ++z)
                 {
-                    _numberOfTriangles += 2;
-                    currentBlockToRender.createLeft();
-                }
+                    int currentIndex = ijpart + z;
 
-                if (x == CHUNK_WIDTH-1 ? true : _blocks[toBlockIndex(x+1,y,z)].getType() == BlockType_Air)
-                {
-                    _numberOfTriangles += 2;
-                    currentBlockToRender.createRight();
-                }
+                    currentBlockToRender = _blocks[currentIndex];
 
-                if (y == 0 ? true : _blocks[toBlockIndex(x,y-1,z)].getType() == BlockType_Air)
-                {
-                    _numberOfTriangles += 2;
-                    currentBlockToRender.createBottom();
-                }
-                
-                if (y == CHUNK_HEIGHT-1 ? true : _blocks[toBlockIndex(x,y+1,z)].getType() == BlockType_Air)
-                {
-                    _numberOfTriangles += 2;
-                    currentBlockToRender.createTop();
-                }
-                
-                if (z == 0 ? true : _blocks[toBlockIndex(x,y,z-1)].getType() == BlockType_Air)
-                {
-                    _numberOfTriangles += 2;
-                    currentBlockToRender.createBack();
-                }
+                    // Don't render inactive blocks (Air)
+                    if(currentBlockToRender.getType() == BlockType_Air)
+                        continue;
 
-                if (z == CHUNK_WIDTH-1 ? true : _blocks[toBlockIndex(x,y,z+1)].getType() == BlockType_Air)
-                {
-                    _numberOfTriangles += 2;
-                    currentBlockToRender.createFront();
-                }
-                
-    glEnd();
+                    // Already rendered this block.
+                    if (rendered[currentIndex])
+                        continue;
+
+                    glPushMatrix();
+
+                    float translateDistX = x * BLOCK_WIDTH;
+                    float translateDistY = y * BLOCK_HEIGHT;
+                    float translateDistZ = z * BLOCK_LENGTH;
+
+                    // index = (x * height + y) * depth + z 
+                    glTranslatef(translateDistX, translateDistY, translateDistZ);
+
+        glBegin(GL_TRIANGLES);
+
+                    switch(face) 
+                    {
+                        case FRONT:
+                            if (z == CHUNK_WIDTH-1 ? true : _blocks[toBlockIndex(x,y,z+1)].getType() == BlockType_Air)
+                            {
+                                _numberOfTriangles += 2;
+                                currentBlockToRender.createFront();
+                            }
+                            break;
+                        case BACK:
+                            if (z == 0 ? true : _blocks[toBlockIndex(x,y,z-1)].getType() == BlockType_Air)
+                            {
+                                _numberOfTriangles += 2;
+                                currentBlockToRender.createBack();
+                            }
+                            break;
+                        case LEFT:
+                            if (x == 0 ? true : _blocks[toBlockIndex(x-1,y,z)].getType() == BlockType_Air)
+                            {
+                                _numberOfTriangles += 2;
+                                currentBlockToRender.createLeft();
+                            }
+                            break;
+                        case RIGHT:
+                            if (x == CHUNK_WIDTH-1 ? true : _blocks[toBlockIndex(x+1,y,z)].getType() == BlockType_Air)
+                            {
+                                _numberOfTriangles += 2;
+                                currentBlockToRender.createRight();
+                            }
+                            break;
+                        case TOP:
+                            if (y == CHUNK_HEIGHT-1 ? true : _blocks[toBlockIndex(x,y+1,z)].getType() == BlockType_Air)
+                            {
+                                _numberOfTriangles += 2;
+                                currentBlockToRender.createTop();
+                            }
+                            break;
+                        case BOTTOM:
+                            if (y == 0 ? true : _blocks[toBlockIndex(x,y-1,z)].getType() == BlockType_Air)
+                            {
+                                _numberOfTriangles += 2;
+                                currentBlockToRender.createBottom();
+                            }
+                            break;
+                    }
+
+        glEnd();
                 //glTranslatef(-translateDistX, -translateDistY, -translateDistZ);
                 glPopMatrix();
 
+                }
             }
         }
-    }
-
+    } 
+               
     glEndList();
 }
 
