@@ -33,6 +33,7 @@ class Block
         void createFront(int, int);
         void createBack(int, int);
         void createLeft(int, int);
+        void createRight(int, int);
         void createTop(int, int);
         void createBottom(int, int);
 
@@ -137,16 +138,24 @@ void Block::createLeft(int heightMultiplier, int lengthMultiplier)
 
 void Block::createRight()
 {
+    createRight(1, 1);
+}
+
+void Block::createRight(int heightMultiplier, int lengthMultiplier)
+{
+    heightMultiplier -= 1;
+    lengthMultiplier -= 1;
+
     glColor3f(0.0, 1.0, 0.0);
 
     // Right
     glNormal3f(1.0f, 0.0f, 0.0f);
     glVertex3f(0.0f+width, 0.0f-height, 0.0f-length); // BB
-    glVertex3f(0.0f+width, 0.0f-height, 0.0f+length); // BT
-    glVertex3f(0.0f+width, 0.0f+height, 0.0f+length); // FT
+    glVertex3f(0.0f+width, 0.0f-height, 0.0f+length + lengthMultiplier*BLOCK_LENGTH); // BT
+    glVertex3f(0.0f+width, 0.0f+height + heightMultiplier*BLOCK_HEIGHT, 0.0f+length + lengthMultiplier*BLOCK_LENGTH); // FT
 
-    glVertex3f(0.0f+width, 0.0f+height, 0.0f+length); // FT
-    glVertex3f(0.0f+width, 0.0f+height, 0.0f-length); // FB
+    glVertex3f(0.0f+width, 0.0f+height + heightMultiplier*BLOCK_HEIGHT, 0.0f+length + lengthMultiplier*BLOCK_LENGTH); // FT
+    glVertex3f(0.0f+width, 0.0f+height + heightMultiplier*BLOCK_HEIGHT, 0.0f-length); // FB
     glVertex3f(0.0f+width, 0.0f-height, 0.0f-length); // BB
 }
 
