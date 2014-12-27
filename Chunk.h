@@ -125,7 +125,7 @@ void Chunk::createMesh()
                                 int nextXSameY = x;
                                 while (nextXSameY + 1 < CHUNK_LENGTH &&
                                     !rendered[toBlockIndex(nextXSameY+1,y,z)] &&
-                                    _blocks[toBlockIndex(nextXSameY+1,y,z+1)].getType() == BlockType_Air &&
+                                    (z == CHUNK_LENGTH-1 || _blocks[toBlockIndex(nextXSameY+1,y,z+1)].getType() == BlockType_Air) &&
                                     _blocks[toBlockIndex(nextXSameY+1,y,z)].getType() == currentBlockToRender.getType()
                                     )
                                 {
@@ -146,7 +146,7 @@ void Chunk::createMesh()
                                     nextXSameY = x;
                                     while(nextXSameY + 1 < minX &&
                                         !rendered[toBlockIndex(nextXSameY+1,nextY+1,z)] &&
-                                        _blocks[toBlockIndex(nextXSameY+1,nextY+1,z+1)].getType() == BlockType_Air &&
+                                        (z == CHUNK_LENGTH-1 || _blocks[toBlockIndex(nextXSameY+1,nextY+1,z+1)].getType() == BlockType_Air) &&
                                         _blocks[toBlockIndex(nextXSameY+1,nextY+1,z)].getType() == currentBlockToRender.getType()
                                         )
                                     {
@@ -179,12 +179,10 @@ void Chunk::createMesh()
                         case BACK:
                             if (z == 0 ? true : _blocks[toBlockIndex(x,y,z-1)].getType() == BlockType_Air)
                             {
-                                currentBlockToRender.createBack(1,1);
-                                break;
                                 int nextXSameY = x;
                                 while (nextXSameY + 1 < CHUNK_LENGTH &&
                                     !rendered[toBlockIndex(nextXSameY+1,y,z)] &&
-                                    _blocks[toBlockIndex(nextXSameY+1,y,z-1)].getType() == BlockType_Air &&
+                                    (z == 0 || _blocks[toBlockIndex(nextXSameY+1,y,z-1)].getType() == BlockType_Air) &&
                                     _blocks[toBlockIndex(nextXSameY+1,y,z)].getType() == currentBlockToRender.getType()
                                     )
                                 {
@@ -198,14 +196,14 @@ void Chunk::createMesh()
                                 int nextY = y;
                                 while(nextY + 1 < CHUNK_HEIGHT &&
                                      !rendered[toBlockIndex(x,nextY+1,z)] &&
-                                     _blocks[toBlockIndex(x, nextY+1,z-1)].getType() == BlockType_Air &&
+                                     (z == 0 || _blocks[toBlockIndex(x, nextY+1,z-1)].getType() == BlockType_Air) &&
                                      _blocks[toBlockIndex(x, nextY+1, z)].getType() == currentBlockToRender.getType() 
                                     )
                                 {
                                     nextXSameY = x;
                                     while(nextXSameY + 1 < minX &&
                                         !rendered[toBlockIndex(nextXSameY+1,nextY+1,z)] &&
-                                        _blocks[toBlockIndex(nextXSameY+1,nextY+1,z-1)].getType() == BlockType_Air &&
+                                        (z == 0 || _blocks[toBlockIndex(nextXSameY+1,nextY+1,z-1)].getType() == BlockType_Air) &&
                                         _blocks[toBlockIndex(nextXSameY+1,nextY+1,z)].getType() == currentBlockToRender.getType()
                                         )
                                     {

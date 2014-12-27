@@ -90,18 +90,21 @@ void Block::createBack()
 
 void Block::createBack(int heightMultiplier, int widthMultiplier)
 {
+    // Decrement so we don't count this block when drawing the extensions.
+    widthMultiplier = widthMultiplier-1;
+    heightMultiplier = heightMultiplier-1;
+
     glColor3f(0.0, 1.0, 0.0);
 
     // Back
     glNormal3f(0.0f, 0.0f, -1.0f);
-    glVertex3f(0.0f+width, 0.0f-height, 0.0f-length); // BR
-    glVertex3f(0.0f+width, 0.0f+height, 0.0f-length); //TR
+    glVertex3f(0.0f+width + widthMultiplier*BLOCK_WIDTH, 0.0f-height, 0.0f-length); // BR
+    glVertex3f(0.0f+width + widthMultiplier*BLOCK_WIDTH, 0.0f+height, 0.0f-length); //TR
     glVertex3f(0.0f-width, 0.0f-height, 0.0f-length); // BL
 
     glVertex3f(0.0f-width, 0.0f+height, 0.0f-length); // TL
     glVertex3f(0.0f-width, 0.0f-height, 0.0f-length); // BL
-    glVertex3f(0.0f+width, 0.0f+height, 0.0f-length); //TR
-
+    glVertex3f(0.0f+width + widthMultiplier*BLOCK_WIDTH, 0.0f+height, 0.0f-length); //TR
 }
 
 void Block::createLeft()
