@@ -33,6 +33,7 @@ class Block
         void createFront(int, int);
         void createBack(int, int);
         void createTop(int, int);
+        void createBottom(int, int);
 
 
         BlockType getType();
@@ -165,18 +166,28 @@ void Block::createTop(int widthMultiplier, int lengthMultiplier)
 
 void Block::createBottom()
 {
+    createBottom(1, 1);
+}
+
+void Block::createBottom(int widthMultiplier, int lengthMultiplier)
+{
+
+    // Decrement so we don't count this block when drawing the extensions.
+    widthMultiplier -= 1;
+    lengthMultiplier -= 1;
+
     glColor3f(0.0, 1.0, 0.0);
 
     // Bottom
     glNormal3f(0.0f, -1.0f, 0.0f);
     glVertex3f(0.0f-width, 0.0f-height, 0.0f-length); // BL
-    glVertex3f(0.0f+width, 0.0f-height, 0.0f-length); // BR
-    glVertex3f(0.0f-width, 0.0f-height, 0.0f+length); // FL
+    glVertex3f(0.0f+width + widthMultiplier*BLOCK_WIDTH, 0.0f-height, 0.0f-length); // BR
+    glVertex3f(0.0f-width, 0.0f-height, 0.0f+length + lengthMultiplier*BLOCK_LENGTH); // FL
 
 
-    glVertex3f(0.0f+width, 0.0f-height, 0.0f+length); // FR
-    glVertex3f(0.0f-width, 0.0f-height, 0.0f+length); // FL
-    glVertex3f(0.0f+width, 0.0f-height, 0.0f-length); // BR
+    glVertex3f(0.0f+width + widthMultiplier*BLOCK_WIDTH, 0.0f-height, 0.0f+length + lengthMultiplier*BLOCK_LENGTH); // FR
+    glVertex3f(0.0f-width, 0.0f-height, 0.0f+length + lengthMultiplier*BLOCK_LENGTH); // FL
+    glVertex3f(0.0f+width + widthMultiplier*BLOCK_WIDTH, 0.0f-height, 0.0f-length); // BR
 }
 
 void Block::setType(BlockType blockType)

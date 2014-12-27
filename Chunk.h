@@ -309,14 +309,65 @@ void Chunk::createMesh()
 
                                 _numberOfTriangles += 2;
                                 currentBlockToRender.createTop(finalX-x+1, finalZ-z+1);
-
                             }
                             break;
                         case BOTTOM:
                             if (y == 0 ? true : _blocks[toBlockIndex(x,y-1,z)].getType() == BlockType_Air)
                             {
+                                int nextZSameX = z;
+                                // Calculate how much we can merge in the same X dimension.
+                                while (nextZSameX + 1 < CHUNK_LENGTH &&
+                                    !rendered[toBlockIndex(x,y,nextZSameX+1)] &&
+                                    (y == 0 || _blocks[toBlockIndex(x,y-1,nextZSameX+1)].getType() == BlockType_Air) &&
+                                    _blocks[toBlockIndex(x,y,nextZSameX+1)].getType() == currentBlockToRender.getType()
+                                    )
+                                {
+                                    nextZSameX++;
+                                }
+
+                                int minZ = nextZSameX;
+                                int finalZ = nextZSameX;
+                                int finalX = x;
+
+                                int nextX = x;
+                                // Greedily search for a better merge.
+                                while(nextX + 1 < CHUNK_WIDTH &&
+                                     !rendered[toBlockIndex(nextX+1,y,z)] &&
+                                     (y == 0 || _blocks[toBlockIndex(nextX-1,y+1,z)].getType() == BlockType_Air) &&
+                                     _blocks[toBlockIndex(nextX+1,y,z)].getType() == currentBlockToRender.getType() 
+                                    )
+                                {
+                                    nextZSameX = z;
+                                    while(nextZSameX + 1 < minZ &&
+                                        !rendered[toBlockIndex(x,y,nextZSameX+1)] &&
+                                        (y == 0 || _blocks[toBlockIndex(x,y-1,nextZSameX+1)].getType() == BlockType_Air) &&
+                                        _blocks[toBlockIndex(x,y,nextZSameX+1)].getType() == currentBlockToRender.getType()
+                                        )
+                                    {
+                                        nextZSameX++;
+                                    }
+
+                                    // Track the min width
+                                    if (nextZSameX < minZ)
+                                        minZ = nextZSameX;
+
+                                    // If we can merge more triangles, update values.
+                                    if ( ((finalX - x)*(finalZ-z)) < (nextZSameX-z)*(nextX-x) )
+                                    {
+                                        finalZ = nextZSameX;
+                                        finalX = nextX;
+                                    }
+
+                                    nextX++;
+                                }
+
+                                // Mark rendered faces.
+                                for (int rx = x; rx <= finalX; rx++)
+                                    for (int rz = z; rz <= finalZ; rz++)
+                                        rendered[toBlockIndex(rx, y, rz)] = true;
+
                                 _numberOfTriangles += 2;
-                                currentBlockToRender.createBottom();
+                                currentBlockToRender.createBottom(finalX-x+1, finalZ-z+1);
                             }
                             break;
                     }
