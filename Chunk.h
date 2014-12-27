@@ -82,8 +82,8 @@ void Chunk::createMesh()
     // 0 - front, 1 - back, 2 - left, 3 - right, 4 - top, 5 - bottom
     for (auto& face : FACES)
     {
-        // Set to 1 once if we have rendered this face.
-        int rendered [CHUNK_WIDTH * CHUNK_HEIGHT * CHUNK_LENGTH] = {};
+        // Set to true once we have rendered this face.
+        bool rendered [CHUNK_WIDTH * CHUNK_HEIGHT * CHUNK_LENGTH] = {false};
 
         for (int x = 0; x < CHUNK_WIDTH; ++x) 
         {
@@ -119,17 +119,68 @@ void Chunk::createMesh()
                     switch(face) 
                     {
                         case FRONT:
-                            if (z == CHUNK_WIDTH-1 ? true : _blocks[toBlockIndex(x,y,z+1)].getType() == BlockType_Air)
+
+                            if (z == CHUNK_LENGTH-1 ? true : _blocks[toBlockIndex(x,y,z+1)].getType() == BlockType_Air)
                             {
+                                int nextXSameY = x;
+                                while (nextXSameY + 1 < CHUNK_LENGTH &&
+                                    !rendered[toBlockIndex(nextXSameY+1,y,z)] &&
+                                    _blocks[toBlockIndex(nextXSameY+1,y,z+1)].getType() == BlockType_Air &&
+                                    _blocks[toBlockIndex(nextXSameY+1,y,z)].getType() == currentBlockToRender.getType()
+                                    )
+                                {
+                                    nextXSameY++;
+                                }
+
+                                int minX = nextXSameY;
+                                int finalX = nextXSameY;
+                                int finalY = y;
+
+                                int nextY = y;
+                                while(nextY + 1 < CHUNK_HEIGHT &&
+                                     !rendered[toBlockIndex(x,nextY+1,z)] &&
+                                     _blocks[toBlockIndex(x, nextY+1,z+1)].getType() == BlockType_Air &&
+                                     _blocks[toBlockIndex(x, nextY+1, z)].getType() == currentBlockToRender.getType() 
+                                    )
+                                {
+                                    nextXSameY = x;
+                                    while(nextXSameY + 1 < minX &&
+                                        !rendered[toBlockIndex(nextXSameY+1,nextY+1,z)] &&
+                                        _blocks[toBlockIndex(nextXSameY+1,nextY+1,z+1)].getType() == BlockType_Air &&
+                                        _blocks[toBlockIndex(nextXSameY+1,nextY+1,z)].getType() == currentBlockToRender.getType()
+                                        )
+                                    {
+                                        nextXSameY++;
+                                    }
+
+                                    // Track the min width
+                                    if (nextXSameY < minX)
+                                        minX = nextXSameY;
+
+                                    // If we can merge more triangles, update values.
+                                    if ( ((finalX - x)*(finalY-y)) < (nextXSameY-x)*(nextY-y) )
+                                    {
+                                        finalX = nextXSameY;
+                                        finalY = nextY;
+                                    }
+
+                                    nextY++;
+                                }
+
+                                // Mark rendered faces.
+                                for (int rx = x; rx <= finalX; rx++)
+                                    for (int ry = y; ry <= finalY; ry++)
+                                        rendered[toBlockIndex(rx, ry, z)] = true;
+
                                 _numberOfTriangles += 2;
-                                currentBlockToRender.createFront();
+                                currentBlockToRender.createFront(finalY - y + 1, finalX-x+1);
                             }
                             break;
                         case BACK:
                             if (z == 0 ? true : _blocks[toBlockIndex(x,y,z-1)].getType() == BlockType_Air)
                             {
                                 _numberOfTriangles += 2;
-                                currentBlockToRender.createBack();
+                                currentBlockToRender.createBack(1, 1);
                             }
                             break;
                         case LEFT:
