@@ -123,6 +123,7 @@ void Chunk::createMesh()
                             if (z == CHUNK_LENGTH-1 ? true : _blocks[toBlockIndex(x,y,z+1)].getType() == BlockType_Air)
                             {
                                 int nextXSameY = x;
+                                // Calculate how much we can merge in the same Y dimension.
                                 while (nextXSameY + 1 < CHUNK_LENGTH &&
                                     !rendered[toBlockIndex(nextXSameY+1,y,z)] &&
                                     (z == CHUNK_LENGTH-1 || _blocks[toBlockIndex(nextXSameY+1,y,z+1)].getType() == BlockType_Air) &&
@@ -137,6 +138,7 @@ void Chunk::createMesh()
                                 int finalY = y;
 
                                 int nextY = y;
+                                // Greedily search for a better merge.
                                 while(nextY + 1 < CHUNK_HEIGHT &&
                                      !rendered[toBlockIndex(x,nextY+1,z)] &&
                                      _blocks[toBlockIndex(x, nextY+1,z+1)].getType() == BlockType_Air &&
@@ -180,6 +182,7 @@ void Chunk::createMesh()
                             if (z == 0 ? true : _blocks[toBlockIndex(x,y,z-1)].getType() == BlockType_Air)
                             {
                                 int nextXSameY = x;
+                                // Calculate how much we can merge in the same Y dimension.
                                 while (nextXSameY + 1 < CHUNK_LENGTH &&
                                     !rendered[toBlockIndex(nextXSameY+1,y,z)] &&
                                     (z == 0 || _blocks[toBlockIndex(nextXSameY+1,y,z-1)].getType() == BlockType_Air) &&
@@ -194,6 +197,7 @@ void Chunk::createMesh()
                                 int finalY = y;
 
                                 int nextY = y;
+                                // Greedily search for a better merge.
                                 while(nextY + 1 < CHUNK_HEIGHT &&
                                      !rendered[toBlockIndex(x,nextY+1,z)] &&
                                      (z == 0 || _blocks[toBlockIndex(x, nextY+1,z-1)].getType() == BlockType_Air) &&
@@ -251,8 +255,61 @@ void Chunk::createMesh()
                         case TOP:
                             if (y == CHUNK_HEIGHT-1 ? true : _blocks[toBlockIndex(x,y+1,z)].getType() == BlockType_Air)
                             {
+                                int nextZSameX = z;
+                                // Calculate how much we can merge in the same X dimension.
+                                while (nextZSameX + 1 < CHUNK_LENGTH &&
+                                    !rendered[toBlockIndex(x,y,nextZSameX+1)] &&
+                                    (y == CHUNK_HEIGHT-1 || _blocks[toBlockIndex(x,y+1,nextZSameX+1)].getType() == BlockType_Air) &&
+                                    _blocks[toBlockIndex(x,y,nextZSameX+1)].getType() == currentBlockToRender.getType()
+                                    )
+                                {
+                                    nextZSameX++;
+                                }
+
+                                int minZ = nextZSameX;
+                                int finalZ = nextZSameX;
+                                int finalX = x;
+
+                                int nextX = x;
+                                // Greedily search for a better merge.
+                                while(nextX + 1 < CHUNK_WIDTH &&
+                                     !rendered[toBlockIndex(nextX+1,y,z)] &&
+                                     (y == CHUNK_HEIGHT-1 || _blocks[toBlockIndex(nextX+1,y+1,z)].getType() == BlockType_Air) &&
+                                     _blocks[toBlockIndex(nextX+1,y,z)].getType() == currentBlockToRender.getType() 
+                                    )
+                                {
+                                    nextZSameX = x;
+                                    while(nextZSameX + 1 < minZ &&
+                                        !rendered[toBlockIndex(x,y,nextZSameX+1)] &&
+                                        (y == CHUNK_HEIGHT-1 || _blocks[toBlockIndex(x,y+1,nextZSameX+1)].getType() == BlockType_Air) &&
+                                        _blocks[toBlockIndex(x,y,nextZSameX+1)].getType() == currentBlockToRender.getType()
+                                        )
+                                    {
+                                        nextZSameX++;
+                                    }
+
+                                    // Track the min width
+                                    if (nextZSameX < minZ)
+                                        minZ = nextZSameX;
+
+                                    // If we can merge more triangles, update values.
+                                    if ( ((finalX - x)*(finalZ-z)) < (nextZSameX-z)*(nextX-x) )
+                                    {
+                                        finalZ = nextZSameX;
+                                        finalX = nextX;
+                                    }
+
+                                    nextX++;
+                                }
+
+                                // Mark rendered faces.
+                                for (int rx = x; rx <= finalX; rx++)
+                                    for (int rz = z; rz <= finalZ; rz++)
+                                        rendered[toBlockIndex(rx, y, rz)] = true;
+
                                 _numberOfTriangles += 2;
-                                currentBlockToRender.createTop();
+                                currentBlockToRender.createTop(finalX-x+1, finalZ-z+1);
+
                             }
                             break;
                         case BOTTOM:

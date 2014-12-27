@@ -32,6 +32,7 @@ class Block
         // Increase width/height of faces using the specified multiplier.
         void createFront(int, int);
         void createBack(int, int);
+        void createTop(int, int);
 
 
         BlockType getType();
@@ -67,8 +68,8 @@ void Block::createFront()
 void Block::createFront(int heightMultiplier, int widthMultiplier)
 {
     // Decrement so we don't count this block when drawing the extensions.
-    widthMultiplier = widthMultiplier-1;
-    heightMultiplier = heightMultiplier-1;
+    widthMultiplier -= 1;
+    heightMultiplier -= 1;
 
     glColor3f(0.0, 1.0, 0.0);
 
@@ -91,8 +92,8 @@ void Block::createBack()
 void Block::createBack(int heightMultiplier, int widthMultiplier)
 {
     // Decrement so we don't count this block when drawing the extensions.
-    widthMultiplier = widthMultiplier-1;
-    heightMultiplier = heightMultiplier-1;
+    widthMultiplier -= 1;
+    heightMultiplier -= 1;
 
     glColor3f(0.0, 1.0, 0.0);
 
@@ -139,17 +140,27 @@ void Block::createRight()
 
 void Block::createTop()
 {
+    createTop(1, 1);
+}
+
+void Block::createTop(int widthMultiplier, int lengthMultiplier)
+{
+
+    // Decrement so we don't count this block when drawing the extensions.
+    widthMultiplier -= 1;
+    lengthMultiplier -= 1;
+
     glColor3f(0.0, 1.0, 0.0);
 
     // Top
     glNormal3f(0.0f, 1.0f, 0.0f);
-    glVertex3f(0.0f-width, 0.0f+height, 0.0f+length); // FL
-    glVertex3f(0.0f+width, 0.0f+height, 0.0f+length); // FR
-    glVertex3f(0.0f+width, 0.0f+height, 0.0f-length); //BR
+    glVertex3f(0.0f-width, 0.0f+height, 0.0f+length + lengthMultiplier*BLOCK_LENGTH); // FL
+    glVertex3f(0.0f+width + widthMultiplier*BLOCK_WIDTH, 0.0f+height, 0.0f+length + lengthMultiplier*BLOCK_LENGTH); // FR
+    glVertex3f(0.0f+width + widthMultiplier*BLOCK_WIDTH, 0.0f+height, 0.0f-length); //BR
 
-    glVertex3f(0.0f+width, 0.0f+height, 0.0f-length); //BR
+    glVertex3f(0.0f+width + widthMultiplier*BLOCK_WIDTH, 0.0f+height, 0.0f-length); //BR
     glVertex3f(0.0f-width, 0.0f+height, 0.0f-length); // BL
-    glVertex3f(0.0f-width, 0.0f+height, 0.0f+length); // FL
+    glVertex3f(0.0f-width, 0.0f+height, 0.0f+length + lengthMultiplier*BLOCK_LENGTH); // FL
 }
 
 void Block::createBottom()
