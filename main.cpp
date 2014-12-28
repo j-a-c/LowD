@@ -3,9 +3,9 @@
 #include <math.h>
 #include <vector>
 
-#include "Player.h"
-#include "ChunkManager.h"
-#include "Shader.h"
+#include "player.h"
+#include "chunk_manager.h"
+#include "shader.h"
 
 #define _maxspeed 6
 #define _gravity 20.0

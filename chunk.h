@@ -1,10 +1,10 @@
 #ifndef CHUNK_H 
 #define CHUNK_H
 
-#include "Block.h"
-#include "BlockType.h"
-#include "Constants.h"
-#include "Simplex.h"
+#include "block.h"
+#include "block_type.h"
+#include "constants.h"
+#include "simplex.h"
 
 #include <vector>
 

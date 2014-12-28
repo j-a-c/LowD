@@ -1,8 +1,8 @@
 #ifndef CHUNKMANAGER_H
 #define CHUNKMANAGER_H
 
-#include "Chunk.h"
-#include "Constants.h"
+#include "chunk.h"
+#include "constants.h"
 #include "datastructures/Vector3D.h"
 
 #include <iostream>

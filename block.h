@@ -1,8 +1,8 @@
 #ifndef BLOCK_H
 #define BLOCK_H
 
-#include "BlockType.h"
-#include "Constants.h"
+#include "block_type.h"
+#include "constants.h"
 
 /**
  * A block is a voxel and is represents data for a single 3D cube.
