@@ -1,41 +1,42 @@
 LowD
 =====================
+LowD is an infinite exploration game.
 
-# Run
+## Run
 All binaries can be found in the folder *bin*.
 
-## Linux
+### Linux
     ./bin/lowd
 
-## Windows
+### Windows
 Not supported yet.
 
-## Mac OS X
+### Mac OS X
 Not supported yet.
 
-# Dependencies
-## Linux
+## Dependencies
+### Linux
 - GLEW 1.6.0
 - GLFW 2.7.2
 
-## Windows
+### Windows
 None.
 
-# Mac OS X
+### Mac OS X
 None.
 
-# Compilation
+## Compilation
 
-## All platforms
+### All platforms
     git clone https://github.com/j-a-c/LowD.git
     make
 
-## Linux
+### Linux
     git clone https://github.com/j-a-c/LowD.git
     make linux
 
-## Windows
+### Windows
 Not supported yet.
 
-## Mac OS X
+### Mac OS X
 Not supported yet.
