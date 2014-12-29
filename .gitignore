@@ -1,10 +1,5 @@
 # Test folders
-prev/*
 tests/*
 
 # Debug file
 debug
-
-# Anything not C++ related
-*.py
-

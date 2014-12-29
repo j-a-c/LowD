@@ -3,7 +3,7 @@
 
 #include "chunk.h"
 #include "constants.h"
-#include "datastructures/Vector3D.h"
+#include "ds/vector3D.h"
 
 #include <iostream>
 #include <math.h>

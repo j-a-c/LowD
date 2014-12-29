@@ -145,6 +145,9 @@ void init()
 	if (!glewIsSupported("GL_VERSION_2_0"))
 		exit(1);
     printf("OpenGL version supported by this platform : %s\n", glGetString(GL_VERSION));
+    printf("Using GLEW version: %s\n", glewGetString(GLEW_VERSION));
+    printf("Using GLFW version: %i.%i.%i\n", GLFW_VERSION_MAJOR, GLFW_VERSION_MINOR, GLFW_VERSION_REVISION);
+
 
     glViewport(0, 0, (GLsizei)desktop.Width, (GLsizei)desktop.Height);
     glMatrixMode(GL_PROJECTION);
