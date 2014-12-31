@@ -15,15 +15,8 @@ All binaries can be found in the folder *bin*.
 Not supported yet.
 
 ## Dependencies
-### Linux
 - GLEW 1.6.0
 - GLFW 3.0.4
-
-### Windows
-None.
-
-### Mac OS X
-None.
 
 ## Compilation
 
