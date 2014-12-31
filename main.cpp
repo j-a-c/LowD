@@ -1,5 +1,5 @@
 #include <GL/glew.h>
-#include <GL/glfw.h>
+#include <GLFW/glfw3.h>
 #include <math.h>
 #include <vector>
 
@@ -58,8 +58,11 @@ Vector3D _faces[] = {
 };
 
 
+GLFWwindow * window;
+
 int main(int argc, char** argv)
 {
+
     init();
     enable();
     lighting();
@@ -125,20 +128,36 @@ void initDebugInfo()
  */
 void init()
 {
-    if (glfwInit() != GL_TRUE)
+    if (!glfwInit())
         shutdown(ERROR);
 
     // Desktop parameters
-    GLFWvidmode desktop;
-    glfwGetDesktopMode(&desktop);
+    int width, height;
+    width  = 0;
+    height = 0;
+
+    int count;
+    const GLFWvidmode* modes = glfwGetVideoModes(glfwGetPrimaryMonitor(), &count);
+    for (int i = 0; i < count; i++)
+    {
+        if (modes[i].width > width && modes[i].height > height)
+        {
+            width = modes[i].width;
+            height = modes[i].height;
+        }
+    }
 
     // Create window
-    if (glfwOpenWindow(desktop.Width, desktop.Height, 8, 8, 8, 8, 24, 8, GLFW_FULLSCREEN) != GL_TRUE)
+    window = glfwCreateWindow(width, height, "LowD", glfwGetPrimaryMonitor(), nullptr);
+    if (!window)
+    {
         shutdown(ERROR);
+    }
+
+    glfwMakeContextCurrent(window);
 
     // Initialize mouse
-    glfwDisable(GLFW_MOUSE_CURSOR);
-    glfwSetMousePos(0,0);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
     
     // Initialize GLEW
 	glewInit();
@@ -149,11 +168,11 @@ void init()
     printf("Using GLFW version: %i.%i.%i\n", GLFW_VERSION_MAJOR, GLFW_VERSION_MINOR, GLFW_VERSION_REVISION);
 
 
-    glViewport(0, 0, (GLsizei)desktop.Width, (GLsizei)desktop.Height);
+    glViewport(0, 0, (GLsizei)width, (GLsizei)height);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     // Set the perspective (angle of sight, perspective, depth)
-    gluPerspective(60, (GLfloat)desktop.Width/ (GLfloat)desktop.Height, 0.1, 100.0); 
+    gluPerspective(60, (GLfloat)width / (GLfloat)height, 0.1, 100.0); 
     glMatrixMode(GL_MODELVIEW);
 
     // Initialize debug info
@@ -264,6 +283,11 @@ void gameloop()
             accumulator -= dt;
         }
         render();
+
+        // Swap back and front buffers
+        glfwSwapBuffers(window);
+
+        glfwPollEvents();
     }
 }
 
@@ -306,13 +330,13 @@ void lookAround()
     float offX = 0;
     float offY = 0;
 
-    if (glfwGetKey(GLFW_KEY_UP) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
         offY -= 1.5;
-    if (glfwGetKey(GLFW_KEY_DOWN) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
         offY += 1.5;
-    if (glfwGetKey(GLFW_KEY_LEFT) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
         offX -= 1.5;
-    if (glfwGetKey(GLFW_KEY_RIGHT) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
         offX += 1.5;
 
     player.offsetOrientation(offX, offY);
@@ -335,39 +359,39 @@ Vector3D interpolate(double delta)
     float zproj = _maxspeed * float(sin(xrotrad));
 
     // Exit
-    if (glfwGetKey(GLFW_KEY_ESC) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         shutdown(OK);
 
     // Left
-    if (glfwGetKey('a') == GLFW_PRESS || glfwGetKey('A') == GLFW_PRESS)
+    if (glfwGetKey(window, 'a') == GLFW_PRESS || glfwGetKey(window, 'A') == GLFW_PRESS)
     {
         xvel -= xproj;
         zvel -= zproj;
     }
 
     // Forward
-    if (glfwGetKey('w') == GLFW_PRESS || glfwGetKey('W') == GLFW_PRESS)
+    if (glfwGetKey(window, 'w') == GLFW_PRESS || glfwGetKey(window, 'W') == GLFW_PRESS)
     {
         xvel += zproj;
         zvel -= xproj;
     }
 
     // Back
-    if (glfwGetKey('s') == GLFW_PRESS || glfwGetKey('S') == GLFW_PRESS)
+    if (glfwGetKey(window, 's') == GLFW_PRESS || glfwGetKey(window, 'S') == GLFW_PRESS)
     {
         xvel -= zproj;
         zvel += xproj;
     }
 
     // Right
-    if (glfwGetKey('d') == GLFW_PRESS || glfwGetKey('D') == GLFW_PRESS)
+    if (glfwGetKey(window, 'd') == GLFW_PRESS || glfwGetKey(window, 'D') == GLFW_PRESS)
     {
         xvel += xproj;
         zvel += zproj;
     }
 
     // JUMP
-    if (glfwGetKey(GLFW_KEY_SPACE) == GLFW_PRESS && !player.isFalling())
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && !player.isFalling())
     {
         player.setFalling(true);
         yvel += _jumpSpeed;
@@ -496,8 +520,4 @@ void render()
     glPopMatrix();
 
     shader.end();
-
-
-    // Swap back and front buffers
-    glfwSwapBuffers();
 }

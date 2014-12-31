@@ -1,8 +1,21 @@
-.PHONY: lowd
+CXX=g++
+I686=i686-w64-mingw32.static-
 
-lowd: linux
+CXXFLAGS= -O2 -std=c++11
+UNIXLIBS= -lGLEW -lglfw3 -lGLU -lX11 -lXxf86vm -lXrandr -lpthread -lXi -lXinerama -lXcursor
+I686LIBS= -DGLEW_STATIC -I/usr/include/GL -L/usr/lib -lGLEW -lglu32 -lglfw3 -lopengl32 -lgdi32
+
+SRC= main.cpp
+
+
+lowd: linux windows
 
 linux:
-	g++ main.cpp -O2 -std=c++11 -lGLU -lGLEW -lglfw -o bin/lowd
-#	Optimization and gprof
-#	g++ -pg -O2 cube.cpp -lGLU -lGLEW -lglfw -o cube
+	$(CXX) $(SRC) $(CXXFLAGS) $(UNIXLIBS) -o bin/lowd 
+	#	Optimization and gprof
+	#	g++ -pg -O2 cube.cpp -lGLU -lGLEW -lglfw -o cube
+
+windows:
+	$(I686)$(CXX) $(SRC) $(CXXFLAGS) $(I686LIBS) -o bin/lowd.exe
+	#`'i686-w64-mingw32.static-pkg-config' glew --cflags --libs` 
+	#`'i686-w64-mingw32.static-pkg-config' glfw3 --cflags --libs`
