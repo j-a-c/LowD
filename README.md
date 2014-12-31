@@ -9,7 +9,7 @@ All binaries can be found in the folder *bin*.
     ./bin/lowd
 
 ### Windows
-Not supported yet.
+    bin/lowd.exe
 
 ### Mac OS X
 Not supported yet.
@@ -17,7 +17,7 @@ Not supported yet.
 ## Dependencies
 ### Linux
 - GLEW 1.6.0
-- GLFW 2.7.2
+- GLFW 3.0.4
 
 ### Windows
 None.
@@ -36,7 +36,8 @@ None.
     make linux
 
 ### Windows
-Not supported yet.
+    git clone https://github.com/j-a-c/LowD.git
+    make windows
 
 ### Mac OS X
 Not supported yet.
