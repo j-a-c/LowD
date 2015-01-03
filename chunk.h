@@ -68,6 +68,7 @@ void Chunk::createMesh()
 
     _theChunk = glGenLists(1);
     glNewList(_theChunk, GL_COMPILE);
+    glBegin(GL_TRIANGLES);
 
     Block currentBlockToRender;
 
@@ -108,8 +109,6 @@ void Chunk::createMesh()
 
                     // index = (x * height + y) * depth + z 
                     currentBlockToRender.setRenderOffset(translateDistX, translateDistY, translateDistZ);
-
-        glBegin(GL_TRIANGLES);
 
                     switch(face) 
                     {
@@ -471,14 +470,13 @@ void Chunk::createMesh()
                             }
                             break;
                     }
-
-        glEnd();
-
                 }
             }
         }
     } 
                
+
+    glEnd();
     glEndList();
 }
 
