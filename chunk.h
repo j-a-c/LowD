@@ -66,9 +66,6 @@ void Chunk::reset()
 void Chunk::createMesh()
 {
 
-    // TODO greedy strip mesh
-
-
     _theChunk = glGenLists(1);
     glNewList(_theChunk, GL_COMPILE);
 
@@ -105,14 +102,12 @@ void Chunk::createMesh()
                     if (rendered[currentIndex])
                         continue;
 
-                    glPushMatrix();
-
                     float translateDistX = x * BLOCK_WIDTH;
                     float translateDistY = y * BLOCK_HEIGHT;
                     float translateDistZ = z * BLOCK_LENGTH;
 
                     // index = (x * height + y) * depth + z 
-                    glTranslatef(translateDistX, translateDistY, translateDistZ);
+                    currentBlockToRender.setRenderOffset(translateDistX, translateDistY, translateDistZ);
 
         glBegin(GL_TRIANGLES);
 
@@ -478,8 +473,6 @@ void Chunk::createMesh()
                     }
 
         glEnd();
-                //glTranslatef(-translateDistX, -translateDistY, -translateDistZ);
-                glPopMatrix();
 
                 }
             }
