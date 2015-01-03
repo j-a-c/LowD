@@ -1,5 +1,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 #include <math.h>
 #include <vector>
 
@@ -44,6 +47,8 @@ float _mouseSensitivity = 0.1;
 /* Axes display list */
 static GLuint axes_list;
 
+float msPerFrame = 0.0f;
+
 Player player;
 ChunkManager chunkManager;
 Shader shader;
@@ -58,7 +63,30 @@ Vector3D _faces[] = {
 };
 
 
+// font face
+FT_Face face;
+// The shader for the text.
+Shader textShader;
+// Attributes for the text shader.
+GLint attribute_coord;
+GLint uniform_tex;
+GLint uniform_color;
+
+// A helpful struct.
+struct point {
+    GLfloat x;
+    GLfloat y;
+    GLfloat s;
+    GLfloat t;
+};
+// The text vertex buffer object.
+GLuint textVBO;
+
+
+
 GLFWwindow * window;
+int screenWidth = 0;
+int screenHeight = 0;
 
 int main(int argc, char** argv)
 {
@@ -131,24 +159,19 @@ void init()
     if (!glfwInit())
         shutdown(ERROR);
 
-    // Desktop parameters
-    int width, height;
-    width  = 0;
-    height = 0;
-
     int count;
     const GLFWvidmode* modes = glfwGetVideoModes(glfwGetPrimaryMonitor(), &count);
     for (int i = 0; i < count; i++)
     {
-        if (modes[i].width > width && modes[i].height > height)
+        if (modes[i].width > screenWidth && modes[i].height > screenHeight)
         {
-            width = modes[i].width;
-            height = modes[i].height;
+            screenWidth = modes[i].width;
+            screenHeight = modes[i].height;
         }
     }
 
     // Create window
-    window = glfwCreateWindow(width, height, "LowD", glfwGetPrimaryMonitor(), nullptr);
+    window = glfwCreateWindow(screenWidth, screenHeight, "LowD", glfwGetPrimaryMonitor(), nullptr);
     if (!window)
     {
         shutdown(ERROR);
@@ -159,24 +182,47 @@ void init()
     // Initialize mouse
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
     
+
     // Initialize GLEW
 	glewInit();
 	if (!glewIsSupported("GL_VERSION_2_0"))
-		exit(1);
+		shutdown(ERROR);
     printf("OpenGL version supported by this platform : %s\n", glGetString(GL_VERSION));
     printf("Using GLEW version: %s\n", glewGetString(GLEW_VERSION));
     printf("Using GLFW version: %i.%i.%i\n", GLFW_VERSION_MAJOR, GLFW_VERSION_MINOR, GLFW_VERSION_REVISION);
 
 
-    glViewport(0, 0, (GLsizei)width, (GLsizei)height);
+    // Initialize FreeType.
+    FT_Library ft;
+     
+    if (FT_Init_FreeType(&ft)) 
+    {
+        // Unable to initialize the FreeType library.
+        std::cout << "Unable to load FreeType library" << std::endl;
+		shutdown(ERROR);
+    }
+
+    // Load a font.
+    if (FT_New_Face(ft, "fonts/FreeSans.ttf", 0, &face)) 
+    {
+        // Unable to load font.
+        std::cout << "Unable to load font." << std::endl;
+		shutdown(ERROR);
+    }
+
+
+    glViewport(0, 0, (GLsizei) screenWidth, (GLsizei) screenHeight);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     // Set the perspective (angle of sight, perspective, depth)
-    gluPerspective(60, (GLfloat)width / (GLfloat)height, 0.1, 100.0); 
+    gluPerspective(60, (GLfloat) screenWidth / (GLfloat) screenHeight, 0.1, 100.0); 
     glMatrixMode(GL_MODELVIEW);
 
     // Initialize debug info
     initDebugInfo();
+
+    // VBO for text
+	glGenBuffers(1, &textVBO);
 
     // Initialize world
     chunkManager.initializeWorld();
@@ -239,6 +285,15 @@ void enable()
 void lighting()
 {
     shader.createShader("shaders/VertexShader", "shaders/FragmentShader");
+
+    textShader.createShader("shaders/text.v.glsl", "shaders/text.f.glsl");
+	attribute_coord = textShader.getAttrib("coord");
+	uniform_tex = textShader.getUniform("tex");
+	uniform_color = textShader.getUniform("color");
+
+    // Check that the attributes are set.
+	if(attribute_coord == -1 || uniform_tex == -1 || uniform_color == -1)
+		std::cout << "Error setting shader attributes." << std::endl;
 }
 
 /*
@@ -274,7 +329,7 @@ void gameloop()
         {
             // 60 FPS = 16.666 ms
             // 30 FPS = 33.333 ms
-            std::cout << 1000.0 / numberOfFrames << " ms/frame." << std::endl;
+            msPerFrame = 1000.0f / numberOfFrames;
             numberOfFrames = 0;
             lastFPSUpdate += 1;
         }
@@ -512,13 +567,103 @@ void drawDebugInfo()
     }
 }
 
+void render_text(const char *text, float x, float y, float sx, float sy) 
+{
+	const char *p;
+	FT_GlyphSlot g = face->glyph;
+
+	/* Create a texture that will be used to hold one "glyph" */
+	GLuint tex;
+
+	glActiveTexture(GL_TEXTURE0);
+	glGenTextures(1, &tex);
+	glBindTexture(GL_TEXTURE_2D, tex);
+	glUniform1i(uniform_tex, 0);
+
+	/* We require 1 byte alignment when uploading texture data */
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+	/* Clamping to edges is important to prevent artifacts when scaling */
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	/* Linear filtering usually looks best for text */
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	/* Set up the VBO for our vertex data */
+	glEnableVertexAttribArray(attribute_coord);
+	glBindBuffer(GL_ARRAY_BUFFER, textVBO);
+	glVertexAttribPointer(attribute_coord, 4, GL_FLOAT, GL_FALSE, 0, 0);
+
+	/* Loop through all characters */
+	for (p = text; *p; p++) 
+    {
+		/* Try to load and render the character */
+		if (FT_Load_Char(face, *p, FT_LOAD_RENDER))
+			continue;
+
+		/* Upload the "bitmap", which contains an 8-bit grayscale image, as an alpha texture */
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, g->bitmap.width, g->bitmap.rows, 0, GL_ALPHA, GL_UNSIGNED_BYTE, g->bitmap.buffer);
+
+		/* Calculate the vertex and texture coordinates */
+		float x2 = x + g->bitmap_left * sx;
+		float y2 = -y - g->bitmap_top * sy;
+		float w = g->bitmap.width * sx;
+		float h = g->bitmap.rows * sy;
+
+		point box[4] = {
+			{x2, -y2, 0, 0},
+			{x2 + w, -y2, 1, 0},
+			{x2, -y2 - h, 0, 1},
+			{x2 + w, -y2 - h, 1, 1},
+		};
+
+		/* Draw the character on the screen */
+		glBufferData(GL_ARRAY_BUFFER, sizeof box, box, GL_DYNAMIC_DRAW);
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+		/* Advance the cursor to the start of the next character */
+		x += (g->advance.x >> 6) * sx;
+		y += (g->advance.y >> 6) * sy;
+	}
+
+	glDisableVertexAttribArray(attribute_coord);
+	glDeleteTextures(1, &tex);
+}
+
+void enter2DMode()
+{
+    // Prep for 2D rendering.
+    glDisable(GL_DEPTH_TEST);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0, screenWidth, screenHeight, 0, 0, 1);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+}
+
+void enter3DMode()
+{
+    // Prep for 3D rendering.
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    // Set the perspective (angle of sight, perspective, depth)
+    gluPerspective(60, (GLfloat) screenWidth / (GLfloat) screenHeight, 0.1, 100.0); 
+    glMatrixMode(GL_MODELVIEW);
+    // Prep for 3D drawing.
+	glEnable(GL_DEPTH_TEST);
+}
+
 /**
  * Rendering function
  */
 void render()
 {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    enter3DMode();
     glLoadIdentity();
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Vertical rotation
     glRotatef(player.up(), 1.0, 0.0, 0.0);
@@ -549,6 +694,30 @@ void render()
     glPopMatrix();
     std::cout << "    chunk render end " << glfwGetTime() << std::endl;
 
-
     shader.end();
+
+    enter2DMode();
+
+    // Scale for the text.
+    float sx = 2.0 / screenWidth;
+	float sy = 2.0 / screenHeight;
+
+    textShader.begin();
+
+	// Enable blending, necessary for our alpha texture.
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    // We will color the font white.
+	GLfloat white[4] = { 1, 1, 1, 1 };
+
+	// Set font size to, set the color.
+    FT_Set_Pixel_Sizes(face, 0, 24);
+	glUniform4fv(uniform_color, 1, white);
+
+    std::cout << "    rendering text start." << std::endl;
+    render_text(std::to_string(msPerFrame).c_str(), 0.1 * sx, 0.1 * sy, sx, sy);
+    std::cout << "    rendering text end." << std::endl;
+
+    textShader.end();
 }
