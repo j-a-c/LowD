@@ -469,11 +469,11 @@ void Chunk::createMesh()
                                 currentBlockToRender.createBottom(finalX-x+1, finalZ-z+1);
                             }
                             break;
-                    }
-                }
-            }
-        }
-    } 
+                    } // switch face
+                } // z
+            } // y 
+        } // x
+    } // face 
                
 
     glEnd();
