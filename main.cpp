@@ -512,12 +512,12 @@ void render()
     Vector3D position = player.getPosition();
     glTranslated(-position.x, -position.y, -position.z);
 
-    shader.begin();
+//    shader.begin();
 
     // Draw environment
     glPushMatrix();
     chunkManager.render();
     glPopMatrix();
 
-    shader.end();
+   // shader.end();
 }

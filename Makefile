@@ -3,7 +3,7 @@ I686=i686-w64-mingw32.static-
 
 CXXFLAGS= -O2 -std=c++11
 UNIXLIBS= -lGLEW -lglfw3 -lGLU -lX11 -lXxf86vm -lXrandr -lpthread -lXi -lXinerama -lXcursor
-I686LIBS= -DGLEW_STATIC -I/usr/include/GL -L/usr/lib -lGLEW -lglu32 -lglfw3 -lopengl32 -lgdi32
+I686LIBS= -DGLEW_STATIC -I/usr/include/GL -L/usr/lib -lglew32 -lglu32 -lglfw3 -lopengl32 -lgdi32 --static -mwindows
 
 SRC= main.cpp
 
