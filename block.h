@@ -40,10 +40,16 @@ class Block
 
         BlockType getType();
         void setType(BlockType blockType);
+        void setRenderOffset(float dx, float dy, float dz);
 
     private:
         // BlockType default is Air
         BlockType _blockType;
+
+        // Render offsets.
+        float _dx = 0.0f;
+        float _dy = 0.0f;
+        float _dz = 0.0f;
 
         // Half the length, width, height
         static constexpr float length = BLOCK_LENGTH / 2.0f;
@@ -78,13 +84,13 @@ void Block::createFront(int heightMultiplier, int widthMultiplier)
 
     // Front
     glNormal3f(0.0f, 0.0f, 1.0f);
-    glVertex3f(0.0f+width + widthMultiplier*BLOCK_WIDTH, 0.0f-height, 0.0f+length); //BR
-    glVertex3f(0.0f+width + widthMultiplier*BLOCK_WIDTH, 0.0f+height + heightMultiplier*BLOCK_HEIGHT, 0.0f+length); //TR
-    glVertex3f(0.0f-width, 0.0f-height, 0.0f+length); // BL
+    glVertex3f(_dx + 0.0f+width + widthMultiplier*BLOCK_WIDTH,  _dy + 0.0f-height,                                  _dz + 0.0f+length); //BR
+    glVertex3f(_dx + 0.0f+width + widthMultiplier*BLOCK_WIDTH,  _dy + 0.0f+height + heightMultiplier*BLOCK_HEIGHT,  _dz + 0.0f+length); //TR
+    glVertex3f(_dx + 0.0f-width,                                _dy + 0.0f-height,                                  _dz + 0.0f+length); // BL
 
-    glVertex3f(0.0f-width, 0.0f+height + heightMultiplier*BLOCK_HEIGHT, 0.0f+length); // TL
-    glVertex3f(0.0f-width, 0.0f-height, 0.0f+length); // BL
-    glVertex3f(0.0f+width + widthMultiplier*BLOCK_WIDTH, 0.0f+height + heightMultiplier*BLOCK_HEIGHT, 0.0f+length); //TR
+    glVertex3f(_dx + 0.0f-width,                                _dy + 0.0f+height + heightMultiplier*BLOCK_HEIGHT,  _dz + 0.0f+length); // TL
+    glVertex3f(_dx + 0.0f-width,                                _dy + 0.0f-height,                                  _dz + 0.0f+length); // BL
+    glVertex3f(_dx + 0.0f+width + widthMultiplier*BLOCK_WIDTH,  _dy + 0.0f+height + heightMultiplier*BLOCK_HEIGHT,  _dz + 0.0f+length); //TR
 }
 
 void Block::createBack()
@@ -102,13 +108,13 @@ void Block::createBack(int heightMultiplier, int widthMultiplier)
 
     // Back
     glNormal3f(0.0f, 0.0f, -1.0f);
-    glVertex3f(0.0f+width + widthMultiplier*BLOCK_WIDTH, 0.0f-height, 0.0f-length); // BR
-    glVertex3f(0.0f+width + widthMultiplier*BLOCK_WIDTH, 0.0f+height + heightMultiplier*BLOCK_HEIGHT, 0.0f-length); //TR
-    glVertex3f(0.0f-width, 0.0f-height, 0.0f-length); // BL
+    glVertex3f(_dx + 0.0f+width + widthMultiplier*BLOCK_WIDTH,  _dy + 0.0f-height,                                  _dz + 0.0f-length); // BR
+    glVertex3f(_dx + 0.0f+width + widthMultiplier*BLOCK_WIDTH,  _dy + 0.0f+height + heightMultiplier*BLOCK_HEIGHT,  _dz + 0.0f-length); //TR
+    glVertex3f(_dx + 0.0f-width,                                _dy + 0.0f-height,                                  _dz + 0.0f-length); // BL
 
-    glVertex3f(0.0f-width, 0.0f+height + heightMultiplier*BLOCK_HEIGHT, 0.0f-length); // TL
-    glVertex3f(0.0f-width, 0.0f-height, 0.0f-length); // BL
-    glVertex3f(0.0f+width + widthMultiplier*BLOCK_WIDTH, 0.0f+height + heightMultiplier*BLOCK_HEIGHT, 0.0f-length); //TR
+    glVertex3f(_dx + 0.0f-width,                                _dy + 0.0f+height + heightMultiplier*BLOCK_HEIGHT,  _dz + 0.0f-length); // TL
+    glVertex3f(_dx + 0.0f-width,                                _dy + 0.0f-height,                                  _dz + 0.0f-length); // BL
+    glVertex3f(_dx + 0.0f+width + widthMultiplier*BLOCK_WIDTH,  _dy + 0.0f+height + heightMultiplier*BLOCK_HEIGHT,  _dz + 0.0f-length); //TR
 }
 
 void Block::createLeft()
@@ -126,13 +132,13 @@ void Block::createLeft(int heightMultiplier, int lengthMultiplier)
 
     // Left
     glNormal3f(-1.0f, 0.0f, 0.0f);
-    glVertex3f(0.0f-width, 0.0f-height, 0.0f+length + lengthMultiplier*BLOCK_LENGTH); //FB
-    glVertex3f(0.0f-width, 0.0f+height + heightMultiplier*BLOCK_HEIGHT, 0.0f+length + lengthMultiplier*BLOCK_LENGTH); //FT
-    glVertex3f(0.0f-width, 0.0f-height, 0.0f-length); //BB
+    glVertex3f(_dx + 0.0f-width,                                _dy + 0.0f-height,                                  _dz + 0.0f+length + lengthMultiplier*BLOCK_LENGTH); //FB
+    glVertex3f(_dx + 0.0f-width,                                _dy + 0.0f+height + heightMultiplier*BLOCK_HEIGHT,  _dz + 0.0f+length + lengthMultiplier*BLOCK_LENGTH); //FT
+    glVertex3f(_dx + 0.0f-width,                                _dy + 0.0f-height,                                  _dz + 0.0f-length); //BB
 
-    glVertex3f(0.0f-width, 0.0f+height + heightMultiplier*BLOCK_HEIGHT, 0.0f-length); //BT
-    glVertex3f(0.0f-width, 0.0f-height, 0.0f-length); //BB
-    glVertex3f(0.0f-width, 0.0f+height + heightMultiplier*BLOCK_HEIGHT, 0.0f+length + lengthMultiplier*BLOCK_LENGTH); //FT
+    glVertex3f(_dx + 0.0f-width,                                _dy + 0.0f+height + heightMultiplier*BLOCK_HEIGHT,  _dz + 0.0f-length); //BT
+    glVertex3f(_dx + 0.0f-width,                                _dy + 0.0f-height,                                  _dz + 0.0f-length); //BB
+    glVertex3f(_dx + 0.0f-width,                                _dy + 0.0f+height + heightMultiplier*BLOCK_HEIGHT,  _dz + 0.0f+length + lengthMultiplier*BLOCK_LENGTH); //FT
 
 }
 
@@ -150,13 +156,13 @@ void Block::createRight(int heightMultiplier, int lengthMultiplier)
 
     // Right
     glNormal3f(1.0f, 0.0f, 0.0f);
-    glVertex3f(0.0f+width, 0.0f-height, 0.0f-length); // BB
-    glVertex3f(0.0f+width, 0.0f-height, 0.0f+length + lengthMultiplier*BLOCK_LENGTH); // BT
-    glVertex3f(0.0f+width, 0.0f+height + heightMultiplier*BLOCK_HEIGHT, 0.0f+length + lengthMultiplier*BLOCK_LENGTH); // FT
+    glVertex3f(_dx + 0.0f+width,                                _dy + 0.0f-height,                                  _dz + 0.0f-length); // BB
+    glVertex3f(_dx + 0.0f+width,                                _dy + 0.0f-height,                                  _dz + 0.0f+length + lengthMultiplier*BLOCK_LENGTH); // BT
+    glVertex3f(_dx + 0.0f+width,                                _dy + 0.0f+height + heightMultiplier*BLOCK_HEIGHT,  _dz + 0.0f+length + lengthMultiplier*BLOCK_LENGTH); // FT
 
-    glVertex3f(0.0f+width, 0.0f+height + heightMultiplier*BLOCK_HEIGHT, 0.0f+length + lengthMultiplier*BLOCK_LENGTH); // FT
-    glVertex3f(0.0f+width, 0.0f+height + heightMultiplier*BLOCK_HEIGHT, 0.0f-length); // FB
-    glVertex3f(0.0f+width, 0.0f-height, 0.0f-length); // BB
+    glVertex3f(_dx + 0.0f+width,                                _dy + 0.0f+height + heightMultiplier*BLOCK_HEIGHT,  _dz + 0.0f+length + lengthMultiplier*BLOCK_LENGTH); // FT
+    glVertex3f(_dx + 0.0f+width,                                _dy + 0.0f+height + heightMultiplier*BLOCK_HEIGHT,  _dz + 0.0f-length); // FB
+    glVertex3f(_dx + 0.0f+width,                                _dy + 0.0f-height,                                  _dz + 0.0f-length); // BB
 }
 
 void Block::createTop()
@@ -175,13 +181,13 @@ void Block::createTop(int widthMultiplier, int lengthMultiplier)
 
     // Top
     glNormal3f(0.0f, 1.0f, 0.0f);
-    glVertex3f(0.0f-width, 0.0f+height, 0.0f+length + lengthMultiplier*BLOCK_LENGTH); // FL
-    glVertex3f(0.0f+width + widthMultiplier*BLOCK_WIDTH, 0.0f+height, 0.0f+length + lengthMultiplier*BLOCK_LENGTH); // FR
-    glVertex3f(0.0f+width + widthMultiplier*BLOCK_WIDTH, 0.0f+height, 0.0f-length); //BR
+    glVertex3f(_dx + 0.0f-width,                                _dy + 0.0f+height,                                  _dz + 0.0f+length + lengthMultiplier*BLOCK_LENGTH); // FL
+    glVertex3f(_dx + 0.0f+width + widthMultiplier*BLOCK_WIDTH,  _dy + 0.0f+height,                                  _dz + 0.0f+length + lengthMultiplier*BLOCK_LENGTH); // FR
+    glVertex3f(_dx + 0.0f+width + widthMultiplier*BLOCK_WIDTH,  _dy + 0.0f+height,                                  _dz + 0.0f-length); //BR
 
-    glVertex3f(0.0f+width + widthMultiplier*BLOCK_WIDTH, 0.0f+height, 0.0f-length); //BR
-    glVertex3f(0.0f-width, 0.0f+height, 0.0f-length); // BL
-    glVertex3f(0.0f-width, 0.0f+height, 0.0f+length + lengthMultiplier*BLOCK_LENGTH); // FL
+    glVertex3f(_dx + 0.0f+width + widthMultiplier*BLOCK_WIDTH,  _dy + 0.0f+height,                                  _dz + 0.0f-length); //BR
+    glVertex3f(_dx + 0.0f-width,                                _dy + 0.0f+height,                                  _dz + 0.0f-length); // BL
+    glVertex3f(_dx + 0.0f-width,                                _dy + 0.0f+height,                                  _dz + 0.0f+length + lengthMultiplier*BLOCK_LENGTH); // FL
 }
 
 void Block::createBottom()
@@ -200,14 +206,14 @@ void Block::createBottom(int widthMultiplier, int lengthMultiplier)
 
     // Bottom
     glNormal3f(0.0f, -1.0f, 0.0f);
-    glVertex3f(0.0f-width, 0.0f-height, 0.0f-length); // BL
-    glVertex3f(0.0f+width + widthMultiplier*BLOCK_WIDTH, 0.0f-height, 0.0f-length); // BR
-    glVertex3f(0.0f-width, 0.0f-height, 0.0f+length + lengthMultiplier*BLOCK_LENGTH); // FL
+    glVertex3f(_dx + 0.0f-width,                                _dy + 0.0f-height,                                  _dz + 0.0f-length); // BL
+    glVertex3f(_dx + 0.0f+width + widthMultiplier*BLOCK_WIDTH,  _dy + 0.0f-height,                                  _dz + 0.0f-length); // BR
+    glVertex3f(_dx + 0.0f-width,                                _dy + 0.0f-height,                                  _dz + 0.0f+length + lengthMultiplier*BLOCK_LENGTH); // FL
 
 
-    glVertex3f(0.0f+width + widthMultiplier*BLOCK_WIDTH, 0.0f-height, 0.0f+length + lengthMultiplier*BLOCK_LENGTH); // FR
-    glVertex3f(0.0f-width, 0.0f-height, 0.0f+length + lengthMultiplier*BLOCK_LENGTH); // FL
-    glVertex3f(0.0f+width + widthMultiplier*BLOCK_WIDTH, 0.0f-height, 0.0f-length); // BR
+    glVertex3f(_dx + 0.0f+width + widthMultiplier*BLOCK_WIDTH,  _dy + 0.0f-height,                                  _dz + 0.0f+length + lengthMultiplier*BLOCK_LENGTH); // FR
+    glVertex3f(_dx + 0.0f-width,                                _dy + 0.0f-height,                                  _dz + 0.0f+length + lengthMultiplier*BLOCK_LENGTH); // FL
+    glVertex3f(_dx + 0.0f+width + widthMultiplier*BLOCK_WIDTH,  _dy + 0.0f-height,                                  _dz + 0.0f-length); // BR
 }
 
 void Block::setType(BlockType blockType)
@@ -218,6 +224,13 @@ void Block::setType(BlockType blockType)
 BlockType Block::getType()
 {
     return _blockType;
+}
+
+void Block::setRenderOffset(float dx, float dy, float dz)
+{
+    _dx = dx;
+    _dy = dy;
+    _dz = dz;
 }
 
 #endif

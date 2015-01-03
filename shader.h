@@ -12,6 +12,8 @@ class Shader
         ~Shader();
 
         void createShader(char * vertexFile, char * fragmentFile);
+        GLint getAttrib(const char *name);
+        GLint getUniform(const char *name);
 
         void begin();
         void end();
@@ -100,4 +102,17 @@ char * Shader::readFile(char *fn)
 	return content;
 }
 
+GLint Shader::getAttrib(const char *name) {
+	GLint attribute = glGetAttribLocation(program, name);
+	if(attribute == -1)
+		fprintf(stderr, "Could not bind attribute %s\n", name);
+	return attribute;
+}
+
+GLint Shader::getUniform(const char *name) {
+	GLint uniform = glGetUniformLocation(program, name);
+	if(uniform == -1)
+		fprintf(stderr, "Could not bind uniform %s\n", name);
+	return uniform;
+}
 #endif
