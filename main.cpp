@@ -258,20 +258,36 @@ void gameloop()
     const double dt = 0.01;
 
     double prevTime = glfwGetTime();
+    double lastFPSUpdate = prevTime;
     double accumulator = 0.0;
+    int numberOfFrames = 0;
 
     while (true)
     {
         // Calculate time since last frame
         double currentTime = glfwGetTime();
         double delta = currentTime - prevTime;
+        numberOfFrames++;
+        std::cout << 'f' << std::endl;
+
+        // ms / frame output, averaged over 1 second.
+        if (currentTime - lastFPSUpdate >= 1.0)
+        {
+            // 60 FPS = 16.666 ms
+            // 30 FPS = 33.333 ms
+            std::cout << 1000.0 / numberOfFrames << " ms/frame." << std::endl;
+            numberOfFrames = 0;
+            lastFPSUpdate += 1;
+        }
+
+
+        prevTime = currentTime;
 
         if (delta > 0.25)
             delta = 0.25;
 
         accumulator += delta;
 
-        prevTime = currentTime;
 
         // Clear screen to black
         glClearColor(0.0, 0.0, 0.0, 1.0);
