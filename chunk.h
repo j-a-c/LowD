@@ -77,7 +77,6 @@ void Chunk::createMesh()
     const int heightLength = CHUNK_HEIGHT * CHUNK_LENGTH;
 
     // Face merge algorithm.
-    // 0 - front, 1 - back, 2 - left, 3 - right, 4 - top, 5 - bottom
     for (auto& face : FACES)
     {
         // Set to true once we have rendered this face.
@@ -110,6 +109,17 @@ void Chunk::createMesh()
                     // index = (x * height + y) * depth + z 
                     currentBlockToRender.setRenderOffset(translateDistX, translateDistY, translateDistZ);
 
+                    // TODO Make all faces use a generic algorithm.
+                    //
+                    // Greedy merge algorithm:
+                    // If current face is in-bounds, not rendered, and exposed,
+                    //      Find consecutive blocks that are in-bounds, not
+                    //      rendered, and the same type as the
+                    //      currentBlockToRender.
+                    //
+                    //      Find the largest rectangle that we can merge in the
+                    //      same plane as the face and render as a single
+                    //      rectangle.
                     switch(face) 
                     {
                         case FRONT:
