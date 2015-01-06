@@ -46,6 +46,15 @@ class Block
         // BlockType default is Air
         BlockType _blockType;
 
+        // Face coloring methods.
+        void _setFrontColor();
+        void _setBackColor();
+        void _setLeftColor();
+        void _setRightColor();
+        void _setTopColor();
+        void _setBottomColor();
+        void _setDefaultColor();
+
         // Render offsets.
         float _dx = 0.0f;
         float _dy = 0.0f;
@@ -80,7 +89,7 @@ void Block::createFront(int heightMultiplier, int widthMultiplier)
     widthMultiplier -= 1;
     heightMultiplier -= 1;
 
-    glColor3f(0.0, 1.0, 0.0);
+    _setFrontColor();
 
     // Front
     glNormal3f(0.0f, 0.0f, 1.0f);
@@ -104,7 +113,7 @@ void Block::createBack(int heightMultiplier, int widthMultiplier)
     widthMultiplier -= 1;
     heightMultiplier -= 1;
 
-    glColor3f(0.0, 1.0, 0.0);
+    _setBackColor();
 
     // Back
     glNormal3f(0.0f, 0.0f, -1.0f);
@@ -128,7 +137,7 @@ void Block::createLeft(int heightMultiplier, int lengthMultiplier)
     heightMultiplier -= 1;
     lengthMultiplier -= 1;
 
-    glColor3f(0.0, 1.0, 0.0);
+    _setLeftColor();
 
     // Left
     glNormal3f(-1.0f, 0.0f, 0.0f);
@@ -152,7 +161,7 @@ void Block::createRight(int heightMultiplier, int lengthMultiplier)
     heightMultiplier -= 1;
     lengthMultiplier -= 1;
 
-    glColor3f(0.0, 1.0, 0.0);
+    _setRightColor();
 
     // Right
     glNormal3f(1.0f, 0.0f, 0.0f);
@@ -177,7 +186,7 @@ void Block::createTop(int widthMultiplier, int lengthMultiplier)
     widthMultiplier -= 1;
     lengthMultiplier -= 1;
 
-    glColor3f(0.0, 1.0, 0.0);
+    _setTopColor();
 
     // Top
     glNormal3f(0.0f, 1.0f, 0.0f);
@@ -202,7 +211,7 @@ void Block::createBottom(int widthMultiplier, int lengthMultiplier)
     widthMultiplier -= 1;
     lengthMultiplier -= 1;
 
-    glColor3f(0.0, 1.0, 0.0);
+    _setBottomColor();
 
     // Bottom
     glNormal3f(0.0f, -1.0f, 0.0f);
@@ -232,5 +241,83 @@ void Block::setRenderOffset(float dx, float dy, float dz)
     _dy = dy;
     _dz = dz;
 }
+
+void Block::_setFrontColor()
+{
+    switch(_blockType)
+    {
+        case BlockType_Grass:
+            glColor3f(0.0f , 0.7647f, 0.1725f);
+            break;
+        default:
+            _setDefaultColor();
+    }
+}
+
+void Block::_setBackColor()
+{
+    switch(_blockType)
+    {
+        case BlockType_Grass:
+            glColor3f(0.0, 0.7647, 0.1725);
+            break;
+        default:
+            _setDefaultColor();
+    }
+}
+
+void Block::_setLeftColor()
+{
+    switch(_blockType)
+    {
+        case BlockType_Grass:
+            glColor3f(0.0, 0.7647, 0.1725);
+            break;
+        default:
+            _setDefaultColor();
+    }
+}
+
+void Block::_setRightColor()
+{
+    switch(_blockType)
+    {
+        case BlockType_Grass:
+            glColor3f(0.0, 0.7647, 0.1725);
+            break;
+        default:
+            _setDefaultColor();
+    }
+}
+
+void Block::_setTopColor()
+{
+    switch(_blockType)
+    {
+        case BlockType_Grass:
+            glColor3f(0.0, 0.8588, 0.1137);
+            break;
+        default:
+            _setDefaultColor();
+    }
+}
+
+void Block::_setBottomColor()
+{
+    switch(_blockType)
+    {
+        case BlockType_Grass:
+           glColor3f(0.0, 0.8588, 0.1137);
+           break;
+        default:
+            _setDefaultColor();
+    }
+}
+
+void Block::_setDefaultColor()
+{
+    glColor3f(1.0f, 1.0f, 1.0f);
+}
+
 
 #endif

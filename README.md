@@ -44,13 +44,15 @@ Not supported yet.
 
 ### Features
 - Player movement bobbing
-- Shaders
+- Allow config file & dynamic changing for 'constants'
+- Implement player light radius
+- Simple shading at intersection of blocks
 - Terrain generation model/algorithm
+- Terrain shaders
 - Implement Debugger class
 - Implement different block colors (top/bot vs sides)
 - Implement sky changing colors
 - Implement clouds
-- Allow config file & dynamic changing for 'constants'
 
 ### Optimizations
 - Render only faces player can see (create separate display lists per face?)
