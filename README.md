@@ -53,6 +53,7 @@ Not supported yet.
 - Implement different block colors (top/bot vs sides)
 - Implement sky changing colors
 - Implement clouds
+- Implement block 'decorations' (supplemental block textures)
 
 ### Optimizations
 - Render only faces player can see (create separate display lists per face?)
