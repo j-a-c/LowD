@@ -187,12 +187,13 @@ void init()
 	glewInit();
 	if (!glewIsSupported("GL_VERSION_2_0"))
 		shutdown(ERROR);
-    printf("OpenGL version supported by this platform : %s\n", glGetString(GL_VERSION));
-    printf("Using GLEW version: %s\n", glewGetString(GLEW_VERSION));
+    std::cout <<"OpenGL version supported by this platform: " << glGetString(GL_VERSION) << std::endl;
+    std::cout << "Using GLEW version: " << glewGetString(GLEW_VERSION) << std::endl;
     printf("Using GLFW version: %i.%i.%i\n", GLFW_VERSION_MAJOR, GLFW_VERSION_MINOR, GLFW_VERSION_REVISION);
 
 
     // Initialize FreeType.
+    std::cout << "Loading FreeType..." << std::endl;
     FT_Library ft;
      
     if (FT_Init_FreeType(&ft)) 
@@ -225,9 +226,11 @@ void init()
 	glGenBuffers(1, &textVBO);
 
     // Initialize world
+    std::cout << "Initializing world..." << std::endl;
     chunkManager.initializeWorld();
 
     // Initialize player position
+    std::cout << "Initializing player..." << std::endl;
     Vector3D position(5, 5, 5);
     player.setPosition(position);
 
@@ -541,7 +544,7 @@ Vector3D collide(Vector3D position, double delta)
     // Gravity
     if(player.isFalling())
     {
-        position.y -= _gravity  * delta;
+        //position.y -= _gravity  * delta;
         //yvel -= delta * _gravity; 
         //yvel = yvel > -_terminalVelocity? -_terminalVelocity: yvel;
     }
