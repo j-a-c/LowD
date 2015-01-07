@@ -1,6 +1,8 @@
 #ifndef CHUNK_H 
 #define CHUNK_H
 
+#include <vector>
+
 #include "constants.h"
 #include "simplex.h"
 
@@ -9,8 +11,6 @@
 #include "blocks/block_type.h"
 #include "blocks/air_block.h"
 #include "blocks/grass_block.h"
-
-#include <vector>
 
 /**
  * A chunk holds data for a bunch of blocks.
@@ -47,7 +47,7 @@ Chunk::Chunk()
 {
     // Create the blocks
     for(int i = 0; i < CHUNK_WIDTH*CHUNK_HEIGHT*CHUNK_LENGTH; i++)
-        _blocks.push_back(new AirBlock());
+        _blocks.push_back(AirBlock::getBlock());
 }
 
 Chunk::~Chunk()
@@ -57,9 +57,9 @@ Chunk::~Chunk()
 
 void Chunk::reset()
 {
-    for (auto *block: _blocks) 
+    for(int i = 0; i < CHUNK_WIDTH*CHUNK_HEIGHT*CHUNK_LENGTH; i++)
     {
-        block = new AirBlock();
+        _blocks[i] = AirBlock::getBlock();
     }
 }
 
@@ -67,10 +67,8 @@ void Chunk::reset()
 /**
  * Creates a display list for the chunk.
  */
-#include <iostream>
 void Chunk::createMesh()
 {
-    std::cout << "1" << std::endl;
     _theChunk = glGenLists(1);
     glNewList(_theChunk, GL_COMPILE);
     glBegin(GL_TRIANGLES);
@@ -100,7 +98,6 @@ void Chunk::createMesh()
 
                     
                     currentBlockToRender = _blocks[currentIndex];
-                    std::cout << "bt " << currentBlockToRender->getType() << std::endl; 
 
                     // Don't render inactive blocks (Air)
                     if(currentBlockToRender->getType() == BlockType_Air)
@@ -151,8 +148,6 @@ void Chunk::createMesh()
 
                                 int nextY = y;
 
-                                std::cout << '4' << std::endl;
-
                                 // Greedily search for a better merge.
                                 while(nextY + 1 < CHUNK_HEIGHT &&
                                      !rendered[toBlockIndex(x,nextY+1,z)] &&
@@ -184,17 +179,13 @@ void Chunk::createMesh()
                                     nextY++;
                                 }
 
-                                std::cout << '5' << std::endl;
-
                                 // Mark rendered faces.
                                 for (int rx = x; rx <= finalX; rx++)
                                     for (int ry = y; ry <= finalY; ry++)
                                         rendered[toBlockIndex(rx, ry, z)] = true;
 
                                 _numberOfTriangles += 2;
-                                std::cout << '6' << std::endl;
                                 currentBlockToRender->createFront(finalY - y + 1, finalX-x+1);
-                                std::cout << '7' << std::endl;
                             }
                             break;
                         case BACK:
@@ -555,7 +546,7 @@ void Chunk::generate(int xpos, int ypos, int zpos)
             {
                 for (int y = 0; y <= heightHere; y++)
                 {
-                    _blocks[toBlockIndex(x,y,z)] = new GrassBlock();
+                    _blocks[toBlockIndex(x,y,z)] = GrassBlock::getBlock();
                 }
             }
 
@@ -564,7 +555,7 @@ void Chunk::generate(int xpos, int ypos, int zpos)
             {
                 for (int y = 0; y < CHUNK_HEIGHT; y++)
                 {
-                    _blocks[toBlockIndex(x,y,z)] = new GrassBlock();
+                    _blocks[toBlockIndex(x,y,z)] = GrassBlock::getBlock();
                 }
             }
 

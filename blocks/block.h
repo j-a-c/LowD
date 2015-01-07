@@ -76,18 +76,13 @@ void Block::createFront()
     createFront(1, 1);
 }
 
-#include <iostream>
 void Block::createFront(int heightMultiplier, int widthMultiplier)
 {
     // Decrement so we don't count this block when drawing the extensions.
     widthMultiplier -= 1;
     heightMultiplier -= 1;
 
-    std::cout << "6.1 " << _blockType << std::endl;
-    std::cout << "(Grass) " << BlockType_Grass << std::endl;
     _setFrontColor();
-    std::cout << "6.2" << std::endl;
-
 
     // Front
     glNormal3f(0.0f, 0.0f, 1.0f);

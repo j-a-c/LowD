@@ -6,10 +6,11 @@
 class GrassBlock : public Block
 {
     public:
-        GrassBlock();
+        static GrassBlock* getBlock();
         ~GrassBlock();
 
     private:
+        GrassBlock();
 
     protected:
         void _setFrontColor() const override;
@@ -22,7 +23,7 @@ class GrassBlock : public Block
 
 GrassBlock::GrassBlock()
 {
-
+    _blockType = BlockType_Grass;
 }
 
 GrassBlock::~GrassBlock()
@@ -30,10 +31,14 @@ GrassBlock::~GrassBlock()
 
 }
 
-#include <iostream>
+GrassBlock* GrassBlock::getBlock()
+{
+    static GrassBlock instance;
+    return &instance;
+}
+
 void GrassBlock::_setFrontColor() const
 {
-    std::cout << "6.1.2" << std::endl;
     glColor3f(0.0f , 0.7647f, 0.1725f);
 }
 

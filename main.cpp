@@ -326,7 +326,7 @@ void gameloop()
         double currentTime = glfwGetTime();
         double delta = currentTime - prevTime;
         numberOfFrames++;
-        std::cout << "frame start " << currentTime << std::endl;
+
         // ms / frame output, averaged over 1 second.
         if (currentTime - lastFPSUpdate >= 1.0)
         {
@@ -350,30 +350,18 @@ void gameloop()
         glClearColor(0.0, 0.0, 0.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        std::cout << "  accumulator " << glfwGetTime() << std::endl;
         while ( accumulator >= dt )
         {
             update(dt);
             accumulator -= dt;
         }
 
-        std::cout << "  render start " << glfwGetTime() << std::endl;
         render();
-        std::cout << "  render end " << glfwGetTime() << std::endl;
-
 
         // Swap back and front buffers
-        std::cout << "  swap start " << glfwGetTime() << std::endl;
         glfwSwapBuffers(window);
-        std::cout << "  swap end " << glfwGetTime() << std::endl;
 
-        std::cout << "  events start " << glfwGetTime() << std::endl;
         glfwPollEvents();
-        std::cout << "  events end " << glfwGetTime() << std::endl;
-
-        std::cout << "frame end " << glfwGetTime() << std::endl;
-
-
     }
 }
 
@@ -544,7 +532,7 @@ Vector3D collide(Vector3D position, double delta)
     // Gravity
     if(player.isFalling())
     {
-        //position.y -= _gravity  * delta;
+        position.y -= _gravity  * delta;
         //yvel -= delta * _gravity; 
         //yvel = yvel > -_terminalVelocity? -_terminalVelocity: yvel;
     }
@@ -690,12 +678,10 @@ void render()
 
     // shader.begin();
 
-    std::cout << "    chunk render start " << glfwGetTime() << std::endl;
     // Draw environment
     glPushMatrix();
     chunkManager.render();
     glPopMatrix();
-    std::cout << "    chunk render end " << glfwGetTime() << std::endl;
 
    // shader.end();
 
@@ -718,9 +704,7 @@ void render()
     FT_Set_Pixel_Sizes(face, 0, 24);
 	glUniform4fv(uniform_color, 1, white);
 
-    std::cout << "    rendering text start." << std::endl;
     render_text(std::to_string(msPerFrame).c_str(), 0.1 * sx, 0.1 * sy, sx, sy);
-    std::cout << "    rendering text end." << std::endl;
 
     textShader.end();
 }

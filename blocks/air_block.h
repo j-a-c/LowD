@@ -6,10 +6,11 @@
 class AirBlock : public Block
 {
     public:
-        AirBlock();
+        static AirBlock* getBlock();
         ~AirBlock();
 
     private:
+        AirBlock();
 
     protected:
         void _setFrontColor() const override;
@@ -28,6 +29,12 @@ AirBlock::AirBlock()
 AirBlock::~AirBlock()
 {
 
+}
+
+AirBlock* AirBlock::getBlock()
+{
+    static AirBlock instance;
+    return &instance;
 }
 
 void AirBlock::_setFrontColor() const
