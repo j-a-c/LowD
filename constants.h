@@ -18,7 +18,7 @@ const bool DEBUG  = true;
 
 // Odd number
 // Length, Width, Height of Render window (in Chunks)
-#define RENDER_SIZE 3
+#define RENDER_SIZE 9
 
 // Player attributes
 #define PLAYER_TOP_DIST 0.25
