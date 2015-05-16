@@ -7,7 +7,7 @@ UNIXLIBS= -lGLEW -lglfw3 -lGLU -lX11 -lXxf86vm -lXrandr -lpthread -lXi -lXineram
 I686LIBS= -DGLEW_STATIC -I/usr/include/GL -L/usr/lib -lGLEW -lglu32 -lglfw3 -lopengl32 -lgdi32 -I/usr/local/mxe/usr/$(I686)/include/freetype2 -lharfbuzz -lcairo -lgobject-2.0 -lfontconfig -lusp10 -lmsimg32 -lgdi32 -lpixman-1 -L/usr/local/mxe/usr/$(I686)/lib/../lib -lffi -lexpat -lfreetype -lbz2 -lpng16 -lz -lharfbuzz_too -lglib-2.0 -lws2_32 -lole32 -lwinmm -lshlwapi -lpcre -lintl -liconv --static -mwindows
 
 
-SRC= main.cpp
+SRC= *.cpp biomes/*.cpp blocks/*.cpp
 
 
 lowd: linux windows

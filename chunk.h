@@ -7,6 +7,7 @@
 #include "simplex.h"
 
 
+#include "biomes/biome.h"
 #include "blocks/block.h"
 #include "blocks/block_type.h"
 #include "blocks/air_block.h"
@@ -26,7 +27,7 @@ class Chunk
         ~Chunk();
 
         void reset();
-        void generate(int x, int y, int z);
+        void generate(Biome* biome, int x, int y, int z);
         void createMesh();
         void render();
 
@@ -499,66 +500,19 @@ void Chunk::createMesh()
 /**
  * Generate chunks. xpos,ypos,zpos is chunk's position.
  */
-void Chunk::generate(int xpos, int ypos, int zpos)
+void Chunk::generate(Biome* biome, int xpos, int ypos, int zpos)
 {
 
-    // First pass terrain
-    
-    // Seed and max height
-    int seed = 100;
-    int maxHeight = 10;
-    
-    // How spread apart values are
-    float scale = 1.0f / 4.0f;
-    // How jagged terrain is
-    int smoothness = 8;
+    biome->set_chunk_location(xpos, ypos, zpos);
 
-    // Base height at player start position 
-    int offset = noise((0/smoothness)*scale, (0/smoothness)*scale,seed)*maxHeight;
-
-    // Set height
     for (int x = 0; x < CHUNK_WIDTH; x++)
     {
-        for (int z = 0; z < CHUNK_LENGTH; z++)
+        for (int y = 0; y < CHUNK_HEIGHT; y++)
         {
-            // Height at this spot
-            int blockx = xpos*CHUNK_WIDTH + x;
-            int blockz = zpos*CHUNK_LENGTH + z;
-            float n = noise((blockx/smoothness)*scale, (blockz/smoothness)*scale, seed);       
-            int heightHere = maxHeight * n - offset;
-
-            int heightY = 0;
-
-            // Is height located in this chunk?
-            while (heightHere > CHUNK_HEIGHT)
+            for (int z = 0; z < CHUNK_LENGTH; z++)
             {
-                heightHere -= CHUNK_HEIGHT;
-                heightY++;
+                _blocks[toBlockIndex(x,y,z)] = biome->get_block(x, y, z);
             }
-            while (heightHere < 0)
-            {
-                heightHere += CHUNK_HEIGHT;
-                heightY--;
-            }
-
-            // Height is located in chunk
-            if (heightY == ypos)
-            {
-                for (int y = 0; y <= heightHere; y++)
-                {
-                    _blocks[toBlockIndex(x,y,z)] = GrassBlock::getBlock();
-                }
-            }
-
-            // Height is above chunk
-            else if (heightY > ypos)
-            {
-                for (int y = 0; y < CHUNK_HEIGHT; y++)
-                {
-                    _blocks[toBlockIndex(x,y,z)] = GrassBlock::getBlock();
-                }
-            }
-
         }
     }
 }
