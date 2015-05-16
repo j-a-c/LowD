@@ -6,8 +6,10 @@
 #include <math.h>
 #include <vector>
 
-#include "player.h"
+#include "biome_manager.h"
 #include "chunk_manager.h"
+#include "default_biome_manager.h"
+#include "player.h"
 #include "shader.h"
 
 #define _maxspeed 6
@@ -50,7 +52,8 @@ static GLuint axes_list;
 float msPerFrame = 0.0f;
 
 Player player;
-ChunkManager chunkManager;
+BiomeManager* biome_manager = new DefaultBiomeManager();
+ChunkManager chunkManager(biome_manager);
 Shader shader;
 
 Vector3D _faces[] = {

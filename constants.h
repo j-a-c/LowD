@@ -18,7 +18,7 @@ const bool DEBUG  = true;
 
 // Odd number
 // Length, Width, Height of Render window (in Chunks)
-#define RENDER_SIZE 3
+#define RENDER_SIZE 9
 
 // Player attributes
 #define PLAYER_TOP_DIST 0.25
@@ -43,16 +43,8 @@ enum Face
 // For face-based loops
 const Face FACES[] = {FRONT, BACK, LEFT, RIGHT, TOP, BOTTOM};
 
-int toChunkIndex(int x, int y, int z)
-{
-    // index = (x * height + y) * depth + z 
-    return (x * RENDER_SIZE + y) * RENDER_SIZE + z; 
-}
+int toChunkIndex(int x, int y, int z);
 
-int toBlockIndex(int x, int y, int z)
-{
-    // index = (x * height + y) * depth + z 
-    return (x * CHUNK_HEIGHT + y) * CHUNK_LENGTH + z; 
-}
+int toBlockIndex(int x, int y, int z);
 
 #endif

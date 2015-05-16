@@ -1,6 +1,7 @@
 #ifndef CHUNKMANAGER_H
 #define CHUNKMANAGER_H
 
+#include "biome_manager.h"
 #include "chunk.h"
 #include "constants.h"
 #include "ds/vector3D.h"
@@ -21,7 +22,7 @@
 class ChunkManager
 {
     public:
-        ChunkManager();
+        ChunkManager(BiomeManager* biome_manager);
         ~ChunkManager();
 
         void initializeWorld();
@@ -33,6 +34,8 @@ class ChunkManager
         bool isActive(Vector3D position);
 
     private:
+        BiomeManager* _biome_manager = nullptr;
+
         //Chunks
         std::vector<Chunk> _nchunks;
 
@@ -63,8 +66,10 @@ class ChunkManager
 
 };
 
-ChunkManager::ChunkManager() : _x{0}, _y{0}, _z{0}
+ChunkManager::ChunkManager(BiomeManager* biome_manager) : _x{0}, _y{0}, _z{0}
 {
+    _biome_manager = biome_manager;
+
     // Initialize the chunks
     for(int i = 0; i < RENDER_SIZE*RENDER_SIZE*RENDER_SIZE; i++)
         _nchunks.push_back(Chunk());
@@ -85,7 +90,16 @@ void ChunkManager::initializeWorld()
         {
             for (int z = 0; z < RENDER_SIZE; z++)
             {
-                _nchunks[toChunkIndex(x,y,z)].generate(x+_x-_offset,y+_y-_offset,z+_z-_offset);
+                int eff_x = x+_x-_offset;
+                int eff_y = y+_y-_offset;
+                int eff_z = z+_z-_offset;
+
+
+                // Get the biome for this chunk.
+                Biome* biome = _biome_manager->get_biome(eff_x, eff_y, eff_x);
+                // Generate the biome.
+                _nchunks[toChunkIndex(x,y,z)].generate(biome, eff_x, eff_y, eff_x);                
+
                 _nchunks[toChunkIndex(x,y,z)].createMesh();
             }
         }
@@ -236,7 +250,17 @@ Vector3D ChunkManager::update(Vector3D position)
                 for (int z = zGenStart; z < zGenStop; z++)
                 {
                     _nchunks[toChunkIndex(x,y,z)].reset();
-                    _nchunks[toChunkIndex(x,y,z)].generate(x+_x-_offset,y+_y-_offset,z+_z-_offset);
+
+                    int eff_x = x+_x-_offset;
+                    int eff_y = y+_y-_offset;
+                    int eff_z = z+_z-_offset;
+
+
+                    // Get the biome for this chunk.
+                    Biome* biome = _biome_manager->get_biome(eff_x, eff_y, eff_x);
+                    // Generate the biome.
+                    _nchunks[toChunkIndex(x,y,z)].generate(biome, eff_x, eff_y, eff_x);
+                    // Create the mesh.
                     _nchunks[toChunkIndex(x,y,z)].createMesh();
                 }
     }
